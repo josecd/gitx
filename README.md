@@ -1,9 +1,9 @@
-# 🚀 GitX - Gestor Inteligente de Perfiles Git
+# 🚀 GitX - Gestor de Perfiles Git
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
-GitX es un gestor inteligente de perfiles Git con **detección automática por carpeta** (nivel nvm real). Cambia entre perfiles personales, de trabajo, o de diferentes clientes de forma automática según la carpeta en la que estés trabajando.
+GitX es un gestor de perfiles Git con **detección automática por carpeta** (nivel nvm real). Cambia entre perfiles personales, de trabajo, o de diferentes clientes de forma automática según la carpeta en la que estés trabajando.
 
 ## ✨ Características Principales
 

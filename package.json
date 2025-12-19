@@ -1,7 +1,7 @@
 {
   "name": "gitx",
   "version": "1.0.0",
-  "description": "🚀 Gestor inteligente de perfiles Git con detección automática por carpeta (nivel nvm real)",
+  "description": "🚀 Gestor de perfiles Git con detección automática por carpeta (nivel nvm real)",
   "main": "dist/index.js",
   "type": "module",
   "bin": {

@@ -13,7 +13,7 @@ const program = new Command();
 
 program
   .name('gitx')
-  .description('🚀 Gestor inteligente de perfiles Git con detección automática')
+  .description('🚀 Gestor de perfiles Git con detección automática')
   .version('1.0.0');
 
 // Auto command - detects and applies profile by folder
@@ -211,13 +211,67 @@ program
     }
   });
 
-  
+// Commands command - show detailed command list
+program
+  .command('commands')
+  .description('Mostrar lista detallada de todos los comandos')
+  .action(() => {
+    console.log(chalk.bold.cyan('\n📋 Comandos de GitX\n'));
+    
+    console.log(chalk.bold.yellow('🎯 Comandos Principales\n'));
+    console.log(chalk.bold('gitx migrate') + ' - Importar configuración existente de Git');
+    console.log(chalk.dim('  Lee tu config actual y crea un perfil automáticamente'));
+    console.log(chalk.dim('  Configura SSH automáticamente\n'));
+    
+    console.log(chalk.bold('gitx auto') + ' - Detección automática de perfiles por carpeta');
+    console.log(chalk.dim('  --enable      Activar modo automático'));
+    console.log(chalk.dim('  --disable     Desactivar modo automático'));
+    console.log(chalk.dim('  --path <path> Especificar ruta\n'));
+    
+    console.log(chalk.bold('gitx doctor') + ' - Diagnosticar y reparar problemas');
+    console.log(chalk.dim('  --fix         Intentar corregir automáticamente\n'));
+    
+    console.log(chalk.bold('gitx switch <perfil>') + ' - Cambiar de perfil');
+    console.log(chalk.dim('  --global      Cambiar perfil global\n'));
+    
+    console.log(chalk.bold.yellow('📝 Gestión de Perfiles\n'));
+    console.log(chalk.bold('gitx profile add') + ' - Agregar nuevo perfil con SSH automático');
+    console.log(chalk.bold('gitx profile list') + ' (o gitx list) - Listar perfiles');
+    console.log(chalk.bold('gitx profile remove <nombre>') + ' - Eliminar perfil');
+    console.log(chalk.bold('gitx profile current') + ' - Ver perfil actual\n');
+    
+    console.log(chalk.bold.yellow('🔗 Gestión de Remotes\n'));
+    console.log(chalk.bold('gitx remote add <url>') + ' - Agregar remote con host correcto');
+    console.log(chalk.dim('  -n, --name <name>  Nombre del remote (default: origin)\n'));
+    console.log(chalk.bold('gitx remote fix') + ' - Arreglar remotes para el perfil actual\n');
+    console.log(chalk.bold('gitx clone <url>') + ' - Clonar repo con perfil automático');
+    console.log(chalk.dim('  -d, --directory <dir>  Directorio destino\n'));
+    
+    console.log(chalk.bold.yellow('🚀 Comandos Rápidos\n'));
+    console.log(chalk.bold('gitx commit <mensaje>') + ' - Add + commit en uno\n');
+    console.log(chalk.bold('gitx publish') + ' - Add + commit + push en uno');
+    console.log(chalk.dim('  -m, --message <msg>  Mensaje del commit (default: "Update")\n'));
+    
+    console.log(chalk.bold.yellow('🧹 Limpieza\n'));
+    console.log(chalk.bold('gitx unlink') + ' - Limpiar configuración del repo');
+    console.log(chalk.dim('  --force       Sin confirmación'));
+    console.log(chalk.dim('  --global      Limpiar config global'));
+    console.log(chalk.dim('  --path <path> Especificar ruta\n'));
+    
+    console.log(chalk.bold.yellow('🔧 Utilidades\n'));
+    console.log(chalk.bold('gitx hook') + ' - Aplicar perfil automáticamente (para git hooks)');
+    console.log(chalk.dim('  --silent      Sin mensajes\n'));
+    
+    console.log(chalk.green('💡 Tip: ') + chalk.dim('Usa "gitx <comando> --help" para ver opciones detalladas\n'));
+  });
+
+
 // Parse arguments
 program.parse();
 
 // Show help if no command provided
 if (!process.argv.slice(2).length) {
-  console.log(chalk.bold.cyan('🚀 GitX - Gestor inteligente de perfiles Git\n'));
+  console.log(chalk.bold.cyan('🚀 GitX - Gestor de perfiles Git\n'));
   program.outputHelp();
   console.log(chalk.dim('\nComandos principales:'));
   console.log(chalk.dim('  gitx migrate      → Importar tu configuración actual'));
