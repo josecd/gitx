@@ -172,6 +172,13 @@ program
     const execAsync = promisify(exec);
     
     try {
+      // Verificar si hay cambios
+      const { stdout: status } = await execAsync('git status --porcelain');
+      if (!status.trim()) {
+        console.log(chalk.yellow('⚠️  No hay cambios para hacer commit'));
+        return;
+      }
+      
       console.log(chalk.cyan('📝 Agregando archivos...'));
       await execAsync('git add .');
       
@@ -187,14 +194,75 @@ program
 
 program
   .command('publish')
-  .description('Add + commit + push en un solo comando')
+  .description('Add + commit + push con validación de cambios remotos')
   .option('-m, --message <message>', 'Mensaje del commit', 'Update')
+  .option('-f, --force', 'Forzar push sin pull previo')
   .action(async (options) => {
     const { exec } = await import('child_process');
     const { promisify } = await import('util');
     const execAsync = promisify(exec);
+    const ora = (await import('ora')).default;
     
     try {
+      // Verificar si hay cambios locales
+      const { stdout: status } = await execAsync('git status --porcelain');
+      if (!status.trim()) {
+        console.log(chalk.yellow('⚠️  No hay cambios locales para publicar'));
+        return;
+      }
+      
+      // Obtener rama actual
+      const { stdout: branchOutput } = await execAsync('git branch --show-current');
+      const currentBranch = branchOutput.trim();
+      
+      if (!currentBranch) {
+        console.log(chalk.red('❌ No estás en ninguna rama'));
+        return;
+      }
+      
+      // Verificar si hay cambios remotos (solo si no es --force)
+      if (!options.force) {
+        const spinner = ora('🔍 Verificando cambios remotos...').start();
+        try {
+          await execAsync('git fetch');
+          
+          // Verificar si la rama remota existe
+          try {
+            const { stdout: remoteDiff } = await execAsync(`git rev-list HEAD..origin/${currentBranch} --count`);
+            const remoteCommits = parseInt(remoteDiff.trim());
+            
+            if (remoteCommits > 0) {
+              spinner.stop();
+              console.log(chalk.yellow(`⚠️  Hay ${remoteCommits} commit(s) en el remoto que no tienes localmente`));
+              console.log(chalk.cyan('📥 Bajando cambios del remoto...'));
+              
+              try {
+                await execAsync('git pull --rebase');
+                console.log(chalk.green('✓ Cambios del remoto aplicados'));
+              } catch (pullError: any) {
+                if (pullError.message.includes('conflict')) {
+                  console.log(chalk.red('\n❌ Conflictos detectados durante el pull'));
+                  console.log(chalk.yellow('Resuelve los conflictos y luego ejecuta:'));
+                  console.log(chalk.cyan('  git add .'));
+                  console.log(chalk.cyan('  git rebase --continue'));
+                  console.log(chalk.cyan('  gitx publish\n'));
+                  process.exit(1);
+                }
+                throw pullError;
+              }
+            } else {
+              spinner.succeed('✓ Sin cambios remotos');
+            }
+          } catch (error: any) {
+            // La rama remota no existe, continuar normalmente
+            spinner.succeed('✓ Primera publicación de la rama');
+          }
+        } catch (error) {
+          spinner.fail('❌ Error al verificar cambios remotos');
+          throw error;
+        }
+      }
+      
       console.log(chalk.cyan('📝 Agregando archivos...'));
       await execAsync('git add .');
       
@@ -202,7 +270,18 @@ program
       await execAsync(`git commit -m "${options.message}"`);
       
       console.log(chalk.cyan('🚀 Subiendo cambios...'));
-      await execAsync('git push');
+      
+      // Detectar si necesita --set-upstream
+      try {
+        await execAsync('git push');
+      } catch (pushError: any) {
+        if (pushError.message.includes('no upstream branch')) {
+          console.log(chalk.cyan('🔗 Configurando upstream para la rama...'));
+          await execAsync(`git push --set-upstream origin ${currentBranch}`);
+        } else {
+          throw pushError;
+        }
+      }
       
       console.log(chalk.green('✓ Cambios publicados exitosamente'));
     } catch (error: any) {
