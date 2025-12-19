@@ -432,7 +432,7 @@ Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más det
 
 - 🐛 [Reportar un bug](https://github.com/yourusername/gitx/issues)
 - 💡 [Solicitar una característica](https://github.com/yourusername/gitx/issues)
-- 📧 Email: support@gitx.dev
+- 📧 Email: jose-cordero.dz@hotmail.com
 
 ---
 
