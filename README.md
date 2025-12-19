@@ -15,6 +15,24 @@ GitX es un gestor de perfiles Git con **detección automática por carpeta** (ni
 - **🧹 `gitx unlink`** - Limpia configuraciones de repositorios
 - **📊 `gitx status-bar`** - Plugin opcional para VS Code que muestra el perfil activo
 
+### 🚀 Automatización SSH
+
+- **🔐 SSH automático** - Genera claves SSH ed25519 al crear perfiles
+- **⚙️ Configuración inteligente** - Actualiza ~/.ssh/config automáticamente
+- **🔑 Gestión de agente** - Agrega claves al ssh-agent automáticamente
+- **🌐 Hosts personalizados** - Crea hosts como `github.com-personal` y `github.com-work`
+
+### 📡 Gestión de Remotos
+
+- **`gitx remote add`** - Agrega remotos con URLs inteligentes
+- **`gitx remote fix`** - Corrige URLs de remotos existentes para usar el perfil correcto
+- **`gitx clone`** - Clona repositorios con configuración automática del perfil
+
+### ⚡ Comandos Rápidos
+
+- **`gitx commit`** - Commit rápido con mensaje (equivalente a `git commit -am`)
+- **`gitx publish`** - Push al remoto con tracking automático
+
 ### 🎨 Otras Características
 
 - 🔄 **Cambio rápido** entre perfiles con `gitx switch`
@@ -23,6 +41,7 @@ GitX es un gestor de perfiles Git con **detección automática por carpeta** (ni
 - 🌍 **Configuración global y local** independiente
 - 💼 **Ideal para freelancers** con múltiples clientes
 - 👥 **Perfecto para equipos** con diferentes cuentas
+- ⌨️ **Autocompletado shell** - Tab completion para bash y zsh (se instala automáticamente)
 
 ## 📦 Instalación
 
@@ -32,11 +51,23 @@ GitX es un gestor de perfiles Git con **detección automática por carpeta** (ni
 - Git instalado y configurado
 - npm o yarn
 
-### Instalación Global
+### Instalación desde NPM (Recomendado)
+
+```bash
+# Instalación global desde npm
+npm install -g gitx
+
+# El autocompletado se instala automáticamente para tu shell
+# Solo necesitas ejecutar:
+source ~/.zshrc  # Para Zsh
+source ~/.bashrc # Para Bash
+```
+
+### Instalación desde Código Fuente
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/yourusername/gitx.git
+git clone https://github.com/josecd/gitx.git
 cd gitx
 
 # Instalar dependencias
@@ -85,6 +116,12 @@ Te pedirá:
 - Tu nombre completo
 - Tu email
 - Clave GPG (opcional)
+
+**✨ Nuevo:** GitX ahora configura SSH automáticamente:
+- ✅ Genera una clave SSH ed25519 para el perfil
+- ✅ La agrega al ssh-agent
+- ✅ Configura ~/.ssh/config con host personalizado (ej: `github.com-personal`)
+- ✅ Te muestra la clave pública para copiarla a GitHub/GitLab
 
 ### 3. Activar el modo automático
 
@@ -181,6 +218,66 @@ gitx switch work
 
 # Cambiar perfil global (todos los repositorios)
 gitx switch personal --global
+```
+
+#### `gitx remote`
+
+Gestión inteligente de remotos con transformación automática de URLs.
+
+```bash
+# Agregar remoto con URL inteligente
+gitx remote add origin https://github.com/user/repo.git
+# Transforma a: git@github.com-personal:user/repo.git (usando tu perfil actual)
+
+# Corregir remoto existente para usar el perfil correcto
+gitx remote fix origin
+# Detecta el perfil y actualiza la URL para usar el host SSH correcto
+
+# Listar remotos
+gitx remote list
+```
+
+**¿Cómo funciona?**
+- Detecta automáticamente el perfil activo
+- Transforma URLs HTTPS a SSH con host personalizado
+- Asegura que uses la clave SSH correcta para cada perfil
+- Soporta GitHub, GitLab, Bitbucket y otros servicios
+
+#### `gitx clone`
+
+Clona repositorios y configura automáticamente el perfil.
+
+```bash
+# Clonar con perfil específico
+gitx clone https://github.com/user/repo.git --profile work
+
+# Clonar detectando el perfil de la carpeta actual
+gitx clone https://github.com/user/repo.git
+
+# Clonar a un directorio específico
+gitx clone https://github.com/user/repo.git --path ~/projects/nuevo-proyecto
+```
+
+**Ventajas:**
+- Transforma la URL automáticamente para usar tu clave SSH
+- Configura el perfil en el repositorio clonado
+- Activa el modo automático si estás en una carpeta asociada
+
+#### `gitx commit` y `gitx publish`
+
+Comandos rápidos para flujo de trabajo común.
+
+```bash
+# Commit rápido con stage automático
+gitx commit "Agrega nueva función"
+# Equivalente a: git add -A && git commit -m "Agrega nueva función"
+
+# Publicar cambios al remoto
+gitx publish
+# Detecta la rama actual y hace push con --set-upstream si es necesario
+
+# Combinación común:
+gitx commit "Fix bug" && gitx publish
 ```
 
 ### Gestión de Perfiles
@@ -292,6 +389,28 @@ echo '#!/bin/sh\ngitx hook --silent' > .git/hooks/post-checkout
 chmod +x .git/hooks/post-checkout
 ```
 
+### Autocompletado Shell
+
+GitX incluye autocompletado para bash y zsh que se instala automáticamente:
+
+**Características:**
+- ⌨️ Completado de comandos: `gitx <tab>`
+- 🔄 Completado de subcomandos: `gitx profile <tab>`
+- 📝 Completado de perfiles: `gitx switch <tab>` muestra tus perfiles
+- 🚀 Completado de opciones: `gitx doctor --<tab>`
+
+**Instalación manual (si es necesario):**
+
+```bash
+# Zsh
+cp completions/gitx-completion.zsh ~/.oh-my-zsh/completions/_gitx
+source ~/.zshrc
+
+# Bash
+sudo cp completions/gitx-completion.bash /usr/local/etc/bash_completion.d/gitx
+source ~/.bashrc
+```
+
 ### Plugin de VS Code
 
 El plugin `gitx-status-bar` muestra el perfil activo en la barra de estado:
@@ -339,17 +458,24 @@ gitx auto --enable
 # Migrar configuración personal
 gitx migrate  # Crear perfil "personal"
 
-# Agregar perfil de trabajo
+# Agregar perfil de trabajo (SSH se configura automáticamente)
 gitx profile add  # work
+# GitX genera la clave SSH y muestra la pública para agregar a GitHub
 
 # Configurar carpetas
 cd ~/work
 gitx switch work --global  # Todos los repos en ~/work
 gitx auto --enable
 
+# Clonar nuevo proyecto de trabajo con configuración automática
+gitx clone https://github.com/company/project.git
+
 cd ~/projects/personal
 gitx switch personal
 gitx auto --enable
+
+# Workflow rápido
+gitx commit "Nueva característica" && gitx publish
 ```
 
 ### Equipo con Diferentes Cuentas
@@ -391,6 +517,34 @@ Ejecuta el doctor para diagnosticar:
 gitx doctor --fix
 ```
 
+### Remoto usa HTTPS en lugar de SSH
+
+Corrige los remotos para usar SSH con tu perfil:
+
+```bash
+# Ver remotos actuales
+git remote -v
+
+# Corregir para usar SSH con tu perfil
+gitx remote fix origin
+
+# Verificar
+git remote -v
+# Debería mostrar: git@github.com-personal:user/repo.git
+```
+
+### El autocompletado no funciona
+
+```bash
+# Verificar instalación
+ls ~/.oh-my-zsh/completions/_gitx  # Zsh
+ls ~/.bash_completion.d/gitx        # Bash
+
+# Reinstalar manualmente
+bash completions/install-completion.sh
+source ~/.zshrc  # o ~/.bashrc
+```
+
 ### No puedo conectarme a GitHub/GitLab
 
 1. Verifica tus claves SSH:
@@ -428,10 +582,17 @@ Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más det
 - Comunidad de Git por las mejores prácticas
 - Todos los contribuidores del proyecto
 
+## � Enlaces
+
+- 📦 [Paquete NPM](https://www.npmjs.com/package/gitx)
+- 🐙 [Repositorio GitHub](https://github.com/josecd/gitx)
+- 📖 [Ejemplos detallados](EXAMPLES.md)
+- 🤝 [Guía de contribución](CONTRIBUTING.md)
+
 ## 📞 Soporte
 
-- 🐛 [Reportar un bug](https://github.com/yourusername/gitx/issues)
-- 💡 [Solicitar una característica](https://github.com/yourusername/gitx/issues)
+- 🐛 [Reportar un bug](https://github.com/josecd/gitx/issues)
+- 💡 [Solicitar una característica](https://github.com/josecd/gitx/issues)
 - 📧 Email: jose-cordero.dz@hotmail.com
 
 ---

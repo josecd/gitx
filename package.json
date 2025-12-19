@@ -11,8 +11,14 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "start": "node dist/cli.js",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "bash scripts/postinstall.sh"
   },
+  "files": [
+    "dist",
+    "completions",
+    "scripts"
+  ],
   "keywords": [
     "git",
     "profile",
