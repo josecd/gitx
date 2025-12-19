@@ -162,6 +162,55 @@ program
     await remoteCmd.clone(url, options);
   });
 
+// Quick commands - simplify common git workflows
+program
+  .command('commit <message>')
+  .description('Git add + commit en un solo comando')
+  .action(async (message) => {
+    const { exec } = await import('child_process');
+    const { promisify } = await import('util');
+    const execAsync = promisify(exec);
+    
+    try {
+      console.log(chalk.cyan('📝 Agregando archivos...'));
+      await execAsync('git add .');
+      
+      console.log(chalk.cyan('💾 Haciendo commit...'));
+      await execAsync(`git commit -m "${message}"`);
+      
+      console.log(chalk.green('✓ Commit exitoso'));
+    } catch (error: any) {
+      console.log(chalk.red(`❌ Error: ${error.message}`));
+      process.exit(1);
+    }
+  });
+
+program
+  .command('publish')
+  .description('Add + commit + push en un solo comando')
+  .option('-m, --message <message>', 'Mensaje del commit', 'Update')
+  .action(async (options) => {
+    const { exec } = await import('child_process');
+    const { promisify } = await import('util');
+    const execAsync = promisify(exec);
+    
+    try {
+      console.log(chalk.cyan('📝 Agregando archivos...'));
+      await execAsync('git add .');
+      
+      console.log(chalk.cyan('💾 Haciendo commit...'));
+      await execAsync(`git commit -m "${options.message}"`);
+      
+      console.log(chalk.cyan('🚀 Subiendo cambios...'));
+      await execAsync('git push');
+      
+      console.log(chalk.green('✓ Cambios publicados exitosamente'));
+    } catch (error: any) {
+      console.log(chalk.red(`❌ Error: ${error.message}`));
+      process.exit(1);
+    }
+  });
+
 // Parse arguments
 program.parse();
 
@@ -175,9 +224,11 @@ if (!process.argv.slice(2).length) {
   console.log(chalk.dim('  gitx doctor       → Diagnosticar problemas'));
   console.log(chalk.dim('  gitx list         → Ver todos tus perfiles'));
   console.log(chalk.dim('  gitx clone <url>  → Clonar repo con perfil automático'));
+  console.log(chalk.dim('  gitx publish      → Add + commit + push en 1 comando'));
   console.log(chalk.dim('\nEjemplos:'));
   console.log(chalk.dim('  gitx migrate'));
   console.log(chalk.dim('  gitx switch work'));
-  console.log(chalk.dim('  gitx clone https://github.com/user/repo.git'));
+  console.log(chalk.dim('  gitx commit "Initial commit"'));
+  console.log(chalk.dim('  gitx publish -m "Update feature"'));
   console.log(chalk.dim('  gitx remote fix'));
 }
