@@ -1,6 +1,6 @@
 {
   "name": "gitx-profile-manager",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "🚀 Gestor de perfiles Git con detección automática por carpeta (nivel nvm real)",
   "main": "dist/index.js",
   "type": "module",
@@ -8,12 +8,12 @@
     "gitx": "bin/gitx"
   },
   "scripts": {
-    "build": "tsc && chmod +x dist/cli.js",
+    "build": "tsc && node scripts/set-executable.js",
     "dev": "tsc --watch",
     "start": "node dist/cli.js",
     "test": "jest",
-    "postinstall": "bash scripts/postinstall.sh",
-    "prepare": "chmod +x dist/cli.js || true"
+    "postinstall": "node scripts/postinstall.js",
+    "prepare": "node scripts/set-executable.js || true"
   },
   "files": [
     "dist",

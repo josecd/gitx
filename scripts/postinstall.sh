@@ -6,6 +6,13 @@
 # Ejecutar en modo silencioso
 set +e  # No fallar si algo sale mal
 
+# Detectar si estamos en Windows (Git Bash)
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+  echo "✓ GitX instalado en Windows"
+  echo "  El autocompletado está disponible en Git Bash"
+  exit 0
+fi
+
 # Detectar el directorio de instalación del paquete
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 COMPLETIONS_DIR="$(dirname "$SCRIPT_DIR")/completions"

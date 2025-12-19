@@ -4,6 +4,7 @@ import { promises as fs } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
 import chalk from 'chalk';
+import { isWindows } from './platform.js';
 
 const execAsync = promisify(exec);
 
@@ -20,7 +21,11 @@ export class SSHManager {
 
   async ensureSSHDir(): Promise<void> {
     try {
-      await fs.mkdir(this.sshDir, { recursive: true, mode: 0o700 });
+      if (isWindows) {
+        await fs.mkdir(this.sshDir, { recursive: true });
+      } else {
+        await fs.mkdir(this.sshDir, { recursive: true, mode: 0o700 });
+      }
     } catch (error) {
       // Directory exists
     }
@@ -55,9 +60,11 @@ export class SSHManager {
 
       console.log(chalk.green(`✓ Clave SSH generada: ${keyPath}`));
 
-      // Set proper permissions
-      await fs.chmod(keyPath, 0o600);
-      await fs.chmod(publicPath, 0o644);
+      // Set proper permissions (skip on Windows)
+      if (!isWindows) {
+        await fs.chmod(keyPath, 0o600);
+        await fs.chmod(publicPath, 0o644);
+      }
 
       return {
         path: keyPath,
