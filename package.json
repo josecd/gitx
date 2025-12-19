@@ -1,6 +1,6 @@
 {
   "name": "gitx-profile-manager",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "🚀 Gestor de perfiles Git con detección automática por carpeta (nivel nvm real)",
   "main": "dist/index.js",
   "type": "module",

@@ -157,6 +157,7 @@ program
   .command('clone <url>')
   .description('Clonar repositorio con perfil automático')
   .option('-d, --directory <dir>', 'Directorio de destino')
+  .option('-p, --profile <profile>', 'Perfil a usar para el repositorio')
   .action(async (url, options) => {
     const remoteCmd = new RemoteCommand();
     await remoteCmd.clone(url, options);

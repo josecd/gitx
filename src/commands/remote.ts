@@ -153,9 +153,9 @@ export class RemoteCommand {
     }
   }
 
-  async clone(url: string, options: { directory?: string }): Promise<void> {
-    // Get current or default profile
-    let profileName = await this.configManager.getDefaultProfile();
+  async clone(url: string, options: { directory?: string; profile?: string }): Promise<void> {
+    // Use specified profile or get current/default
+    let profileName = options.profile || await this.configManager.getDefaultProfile();
     
     if (!profileName) {
       const profiles = await this.configManager.listProfiles();
@@ -182,6 +182,13 @@ export class RemoteCommand {
       ]);
 
       profileName = selectedProfile;
+    } else if (options.profile) {
+      // Verify the specified profile exists
+      const profile = await this.configManager.getProfile(options.profile);
+      if (!profile) {
+        console.log(chalk.red(`❌ El perfil "${options.profile}" no existe`));
+        process.exit(1);
+      }
     }
 
     // Transform URL
@@ -219,8 +226,20 @@ export class RemoteCommand {
       try {
         await this.configManager.setFolderProfile(repoPath, profileName!);
         console.log(chalk.green(`\n✓ Modo automático activado para: ${repoPath}`));
+        
+        // Apply profile configuration to the cloned repo
+        const profile = await this.configManager.getProfile(profileName!);
+        if (profile) {
+          // Change to the cloned directory
+          process.chdir(repoPath);
+          
+          // Apply git config using the profile object
+          await this.gitManager.setConfig(profile, 'local');
+          
+          console.log(chalk.green(`✓ Perfil "${profileName}" aplicado al repositorio`));
+        }
       } catch (error) {
-        // Ignore error
+        console.log(chalk.yellow(`⚠️  No se pudo aplicar el perfil completamente`));
       }
 
     } catch (error: any) {
