@@ -1,0 +1,40 @@
+{
+  "name": "gitx",
+  "version": "1.0.0",
+  "description": "🚀 Gestor inteligente de perfiles Git con detección automática por carpeta (nivel nvm real)",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "gitx": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/cli.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "git",
+    "profile",
+    "manager",
+    "ssh",
+    "automation",
+    "cli"
+  ],
+  "author": "Alex",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "inquirer": "^9.2.12",
+    "ora": "^7.0.1"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

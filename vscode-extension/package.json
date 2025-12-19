@@ -1,0 +1,67 @@
+{
+  "name": "gitx-status-bar",
+  "displayName": "GitX Status Bar",
+  "description": "Muestra el perfil Git activo en la barra de estado de VS Code",
+  "version": "1.0.0",
+  "publisher": "gitx",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "git",
+    "profile",
+    "status bar"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gitx.switchProfile",
+        "title": "GitX: Switch Profile"
+      },
+      {
+        "command": "gitx.refreshStatus",
+        "title": "GitX: Refresh Status"
+      }
+    ],
+    "configuration": {
+      "title": "GitX",
+      "properties": {
+        "gitx.showInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Git profile in status bar"
+        },
+        "gitx.autoRefresh": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically refresh when changing folders"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^2.22.0",
+    "typescript": "^5.3.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/gitx"
+  },
+  "license": "MIT"
+}
