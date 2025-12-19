@@ -55,7 +55,7 @@ GitX es un gestor de perfiles Git con **detección automática por carpeta** (ni
 
 ```bash
 # Instalación global desde npm
-npm install -g gitx
+npm install -g gitx-profile-manager
 
 # El autocompletado se instala automáticamente para tu shell
 # Solo necesitas ejecutar:
