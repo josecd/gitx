@@ -6,6 +6,7 @@ import { DoctorCommand } from './commands/doctor.js';
 import { MigrateCommand } from './commands/migrate.js';
 import { UnlinkCommand } from './commands/unlink.js';
 import { ProfileCommands } from './commands/profile.js';
+import { RemoteCommand } from './commands/remote.js';
 import chalk from 'chalk';
 
 const program = new Command();
@@ -130,6 +131,37 @@ program
     }
   });
 
+// Remote commands - smart remote management
+program
+  .command('remote')
+  .description('Gestionar remotes de Git con perfiles automáticos');
+
+program
+  .command('remote add <url>')
+  .description('Agregar remote con host correcto según perfil')
+  .option('-n, --name <name>', 'Nombre del remote', 'origin')
+  .action(async (url, options) => {
+    const remoteCmd = new RemoteCommand();
+    await remoteCmd.add(url, options);
+  });
+
+program
+  .command('remote fix')
+  .description('Arreglar remotes existentes para usar el perfil actual')
+  .action(async () => {
+    const remoteCmd = new RemoteCommand();
+    await remoteCmd.fix();
+  });
+
+program
+  .command('clone <url>')
+  .description('Clonar repositorio con perfil automático')
+  .option('-d, --directory <dir>', 'Directorio de destino')
+  .action(async (url, options) => {
+    const remoteCmd = new RemoteCommand();
+    await remoteCmd.clone(url, options);
+  });
+
 // Parse arguments
 program.parse();
 
@@ -142,8 +174,10 @@ if (!process.argv.slice(2).length) {
   console.log(chalk.dim('  gitx auto         → Activar detección automática'));
   console.log(chalk.dim('  gitx doctor       → Diagnosticar problemas'));
   console.log(chalk.dim('  gitx list         → Ver todos tus perfiles'));
+  console.log(chalk.dim('  gitx clone <url>  → Clonar repo con perfil automático'));
   console.log(chalk.dim('\nEjemplos:'));
   console.log(chalk.dim('  gitx migrate'));
   console.log(chalk.dim('  gitx switch work'));
-  console.log(chalk.dim('  gitx auto --enable'));
+  console.log(chalk.dim('  gitx clone https://github.com/user/repo.git'));
+  console.log(chalk.dim('  gitx remote fix'));
 }
