@@ -23,35 +23,37 @@ export class GitManager {
     }
   }
 
-  async setConfig(profile: GitProfile, scope: 'local' | 'global' = 'local'): Promise<void> {
+  async setConfig(profile: GitProfile, scope: 'local' | 'global' = 'local', cwd?: string): Promise<void> {
     const flag = scope === 'local' ? '--local' : '--global';
+    const options = cwd ? { cwd } : {};
     
-    await execAsync(`git config ${flag} user.name "${profile.name}"`);
-    await execAsync(`git config ${flag} user.email "${profile.email}"`);
+    await execAsync(`git config ${flag} user.name "${profile.name}"`, options);
+    await execAsync(`git config ${flag} user.email "${profile.email}"`, options);
     
     if (profile.signingKey) {
-      await execAsync(`git config ${flag} user.signingkey "${profile.signingKey}"`);
-      await execAsync(`git config ${flag} commit.gpgsign true`);
+      await execAsync(`git config ${flag} user.signingkey "${profile.signingKey}"`, options);
+      await execAsync(`git config ${flag} commit.gpgsign true`, options);
     }
   }
 
-  async unsetConfig(scope: 'local' | 'global' = 'local'): Promise<void> {
+  async unsetConfig(scope: 'local' | 'global' = 'local', cwd?: string): Promise<void> {
     const flag = scope === 'local' ? '--local' : '--global';
+    const options = cwd ? { cwd } : {};
     
     try {
-      await execAsync(`git config ${flag} --unset user.name`);
+      await execAsync(`git config ${flag} --unset user.name`, options);
     } catch (error) {}
     
     try {
-      await execAsync(`git config ${flag} --unset user.email`);
+      await execAsync(`git config ${flag} --unset user.email`, options);
     } catch (error) {}
     
     try {
-      await execAsync(`git config ${flag} --unset user.signingkey`);
+      await execAsync(`git config ${flag} --unset user.signingkey`, options);
     } catch (error) {}
     
     try {
-      await execAsync(`git config ${flag} --unset commit.gpgsign`);
+      await execAsync(`git config ${flag} --unset commit.gpgsign`, options);
     } catch (error) {}
   }
 
