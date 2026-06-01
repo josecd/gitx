@@ -1081,9 +1081,9 @@ function renderDiffViewer(diffTextOrObj, container, showCheckboxes = false, file
     if (showCheckboxes) {
       if (line.type === 'addition' || line.type === 'deletion') {
         checkboxHtml = `
-          <div class="diff-line-stage-container">
+          <label class="diff-line-stage-container">
             <input type="checkbox" class="diff-line-checkbox" data-index="${line.changeIndex}" ${line.staged ? 'checked' : ''} title="Preparar esta línea" />
-          </div>
+          </label>
         `;
       } else {
         checkboxHtml = `<div class="diff-line-stage-container"></div>`;
@@ -1104,6 +1104,18 @@ function renderDiffViewer(diffTextOrObj, container, showCheckboxes = false, file
       <span class="diff-line-marker">${escapeHTML(marker)}</span>
       <span class="diff-line-code">${escapeHTML(code)}</span>
     `;
+
+    // Click on line numbers gutter also triggers staging toggle
+    const numsEl = lineEl.querySelector('.diff-line-nums');
+    const checkbox = lineEl.querySelector('.diff-line-checkbox');
+    if (numsEl && checkbox) {
+      numsEl.style.cursor = 'pointer';
+      numsEl.addEventListener('click', (e) => {
+        e.preventDefault();
+        checkbox.click();
+      });
+    }
+
     viewer.appendChild(lineEl);
   });
 
