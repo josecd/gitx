@@ -5,393 +5,588 @@
     <link rel="icon" type="image/svg+xml" href="/src/assets/gitx-logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GitX Desktop</title>
-    <!-- Google Fonts: Outfit -->
+    <meta name="description" content="GitX Desktop — Gestiona múltiples identidades Git de forma visual, intuitiva y segura." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="app">
-      <!-- Top Navigation Bar -->
-      <header class="app-header">
-        <div class="header-left">
-          <div class="logo-container">
+
+      <!-- ===================== TOP BAR ===================== -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <!-- Logo -->
+          <div class="logo">
             <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-              <line x1="9" y1="18" x2="9" y2="18.01" />
-              <line x1="12" y1="15" x2="12" y2="15.01" />
             </svg>
             <span class="logo-text">GitX</span>
           </div>
 
-          <div class="divider"></div>
+          <div class="topbar-sep"></div>
 
-          <!-- Repository Dropdown -->
-          <div class="header-dropdown" id="repo-dropdown-btn">
-            <div class="dropdown-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                <line x1="8" y1="21" x2="16" y2="21" />
-                <line x1="12" y1="17" x2="12" y2="21" />
-              </svg>
-            </div>
-            <div class="dropdown-content-meta">
-              <span class="label">Repositorio actual</span>
-              <span class="value" id="current-repo-name">api-core</span>
-            </div>
-            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="m6 9 6 6 6-6"/>
+          <!-- Current Repository Picker -->
+          <div class="topbar-picker" id="repo-picker-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
             </svg>
-            
-            <!-- Repo Dropdown List -->
-            <div class="dropdown-menu" id="repo-menu">
-              <div class="dropdown-search">
-                <input type="text" id="repo-search-input" placeholder="Buscar repositorio..." class="dropdown-search-input" autocomplete="off" />
+            <div class="picker-meta">
+              <span class="picker-label">Repositorio</span>
+              <span class="picker-value" id="current-repo-name">—</span>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+
+            <!-- Repo Dropdown -->
+            <div class="picker-menu" id="repo-menu">
+              <div class="picker-search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="repo-search-input" placeholder="Filtrar repositorios..." autocomplete="off" />
               </div>
-              <div class="dropdown-list" id="repo-list">
-                <div class="menu-item active" data-repo="api-core">
-                  <span class="item-name">api-core</span>
-                  <span class="item-path">/Users/alex/Documents/alify/api-core</span>
-                </div>
-                <div class="menu-item" data-repo="personal-web">
-                  <span class="item-name">personal-web</span>
-                  <span class="item-path">/Users/alex/Documents/personal/personal-web</span>
-                </div>
-                <div class="menu-item" data-repo="gitx-cli">
-                  <span class="item-name">gitx-cli</span>
-                  <span class="item-path">/Users/alex/Documents/personal/gitx</span>
-                </div>
-              </div>
-              <div class="dropdown-actions">
-                <button type="button" class="dropdown-action-btn" id="link-repo-btn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M12 5v14M5 12h14"/></svg>
-                  Vincular carpeta existente...
+              <div class="picker-list" id="repo-list"></div>
+              <div class="picker-actions">
+                <button type="button" id="link-repo-btn" class="picker-action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                  Vincular carpeta local...
                 </button>
-                <button type="button" class="dropdown-action-btn" id="clone-repo-btn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                  Clonar repositorio remoto...
+                <button type="button" id="clone-repo-btn" class="picker-action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                  Clonar repositorio...
                 </button>
               </div>
             </div>
           </div>
 
-          <div class="divider"></div>
+          <div class="topbar-sep"></div>
 
-          <!-- Active Profile Dropdown -->
-          <div class="header-dropdown" id="profile-dropdown-btn">
-            <div class="dropdown-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </div>
-            <div class="dropdown-content-meta">
-              <span class="label">Perfil activo</span>
-              <span class="value" id="current-profile-name">work</span>
-            </div>
-            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="m6 9 6 6 6-6"/>
+          <!-- Profile Picker -->
+          <div class="topbar-picker" id="profile-picker-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
             </svg>
+            <div class="picker-meta">
+              <span class="picker-label">Perfil activo</span>
+              <span class="picker-value" id="current-profile-name">—</span>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            <div class="picker-menu" id="profile-menu"></div>
+          </div>
 
-            <!-- Profile Dropdown List -->
-            <div class="dropdown-menu" id="profile-menu">
-              <div class="menu-item active" data-profile="work">
-                <span class="item-name">work</span>
-                <span class="item-email">alex@company.com</span>
+          <div class="topbar-sep"></div>
+
+          <!-- Branch Picker -->
+          <div class="topbar-picker" id="branch-picker-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)">
+              <line x1="6" y1="3" x2="6" y2="15"/>
+              <circle cx="18" cy="6" r="3"/>
+              <circle cx="6" cy="18" r="3"/>
+              <path d="M18 9a9 9 0 0 1-9 9"/>
+            </svg>
+            <div class="picker-meta">
+              <span class="picker-label">Branch actual</span>
+              <span class="picker-value" id="current-branch-name">—</span>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+
+            <!-- Branch Dropdown -->
+            <div class="picker-menu" id="branch-menu">
+              <div class="picker-search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="branch-search-input" placeholder="Filtrar o crear branch..." autocomplete="off" />
               </div>
-              <div class="menu-item" data-profile="personal">
-                <span class="item-name">personal</span>
-                <span class="item-email">alex@personal.com</span>
-              </div>
-              <div class="menu-item" data-profile="client-x">
-                <span class="item-name">client-x</span>
-                <span class="item-email">alex@clientx-partner.com</span>
-              </div>
+              <div class="picker-list" id="branch-list"></div>
+              <button type="button" class="picker-action-btn" id="merge-trigger-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px; color:var(--text-link);"><path d="M18 3v10M6 21V11M18 13a4 4 0 0 1-4 4h-4a4 4 0 0 0-4 4"/></svg>
+                <span>Fusionar branch (Merge)...</span>
+              </button>
             </div>
           </div>
         </div>
 
-        <div class="header-right">
-          <!-- Doctor Button -->
-          <button class="header-action-btn" id="doctor-btn" title="Diagnosticar e intentar corregir problemas">
-            <svg class="doctor-icon animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="m12 3-1.912 5.886H3.882l4.992 3.63L6.96 18.4l5.04-3.66 5.04 3.66-1.912-5.884 4.992-3.63h-6.206L12 3Z" />
-            </svg>
-            <span>Doctor System</span>
+
+        <div class="topbar-right">
+          <!-- Tab switcher: Changes / History / Profiles -->
+          <div class="topbar-tabs" role="tablist">
+            <button class="topbar-tab active" id="tab-changes" role="tab" aria-selected="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span>Cambios</span>
+              <span class="tab-badge" id="changes-count-badge" style="display:none"></span>
+            </button>
+            <button class="topbar-tab" id="tab-history" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+              <span>Historial</span>
+            </button>
+            <button class="topbar-tab" id="tab-profiles" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Perfiles</span>
+            </button>
+          </div>
+
+          <div class="topbar-sep"></div>
+
+          <!-- Fetch / Pull / Push button -->
+          <button class="remote-action-btn" id="remote-action-btn" title="Fetch / Pull / Push desde el remoto" disabled>
+            <span class="remote-action-icon" id="remote-action-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/>
+              </svg>
+            </span>
+            <span class="remote-action-text" id="remote-action-text">Fetch origin</span>
+            <span class="remote-action-meta" id="remote-action-meta"></span>
           </button>
-          
-          <button class="sync-btn" id="sync-btn">
-            <svg class="sync-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+
+          <div class="topbar-sep"></div>
+
+          <!-- Doctor + Sync actions -->
+          <button class="topbar-action-btn" id="doctor-btn" title="GitX Doctor — Diagnóstico del Sistema">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="doctor-pulse">
+              <path d="m12 3-1.912 5.886H3.882l4.992 3.63L6.96 18.4l5.04-3.66 5.04 3.66-1.912-5.884 4.992-3.63h-6.206L12 3Z"/>
             </svg>
-            <span>Sync Profiles</span>
+            Doctor
+          </button>
+
+          <button class="topbar-action-btn" id="sync-btn" title="Sincronizar perfiles con la máquina">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Sync
           </button>
         </div>
       </header>
 
-      <!-- Main Application Container -->
-      <main class="app-body">
-        
-        <!-- Panel 1: Sidebar (Tabs: Perfiles / Historial) -->
-        <section class="panel sidebar-panel">
-          <div class="tab-header">
-            <button class="tab-btn active" id="tab-profiles">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-              <span>Perfiles</span>
-            </button>
-            <button class="tab-btn" id="tab-history">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                <path d="M3 3v5h5" />
-                <path d="M12 7v5l4 2" />
-              </svg>
-              <span>Historial</span>
-            </button>
-          </div>
+      <!-- ===================== MAIN WORKSPACE ===================== -->
+      <main class="workspace" id="workspace">
 
-          <!-- Search filter -->
-          <div class="search-container">
-            <div class="search-box">
-              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              <input type="text" id="search-input" placeholder="Buscar perfil o commit..." />
+        <!-- ====== VIEW: CHANGES (GitHub Desktop style) ====== -->
+        <div class="view" id="view-changes">
+          <!-- Left: Changes list + commit form -->
+          <aside class="changes-sidebar">
+            <div class="changes-header">
+              <h2 class="panel-heading">Cambios</h2>
+              <div class="changes-actions">
+                <button class="icon-btn" id="refresh-changes-btn" title="Actualizar estado">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Sidebar Item List -->
-          <div class="sidebar-list" id="sidebar-items-list">
-            <!-- Items rendered dynamically by JS -->
-          </div>
-          
-          <!-- Bottom Quick Add Button (only visible in Profiles Tab) -->
-          <div class="sidebar-footer" id="sidebar-footer-action">
-            <button class="add-profile-btn" id="add-profile-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M12 5v14" />
-              </svg>
-              <span>Nuevo Perfil</span>
-            </button>
-          </div>
-        </section>
-
-        <!-- Panel 2: Center (List of Files/Configurations) -->
-        <section class="panel center-panel">
-          <div class="panel-header">
-            <span class="panel-title" id="center-panel-title">Archivos de Configuración</span>
-            <span class="panel-subtitle" id="center-panel-subtitle">2 elementos modificados</span>
-          </div>
-
-          <div class="center-list" id="center-items-list">
-            <!-- Files rendered dynamically by JS -->
-          </div>
-        </section>
-
-        <!-- Panel 3: Right Inspector (Details / Diff View) -->
-        <section class="panel inspector-panel">
-          <!-- Header with actions -->
-          <div class="inspector-header">
-            <div class="inspector-meta">
-              <span class="file-name" id="inspector-file-name">.git/config</span>
-              <span class="file-path" id="inspector-file-path">/Users/alex/Documents/alify/api-core/.git/config</span>
+            <!-- File list with checkboxes -->
+            <div class="changes-list" id="changes-list">
+              <div class="empty-state" id="changes-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                </svg>
+                <p>Sin cambios locales</p>
+                <span>El directorio de trabajo está limpio</span>
+              </div>
             </div>
-            <div class="inspector-actions" id="inspector-actions-container">
-              <span class="diff-summary text-green" id="diff-summary-additions">+45</span>
-              <span class="diff-summary text-red" id="diff-summary-deletions">-8</span>
-            </div>
-          </div>
 
-          <!-- Diff Container / Profile Config Form -->
-          <div class="inspector-content" id="inspector-main-content">
-            <!-- Diffs or details forms rendered dynamically by JS -->
-          </div>
-        </section>
+            <!-- Undo Banner -->
+            <div class="undo-banner" id="undo-banner" style="display: none;">
+              <div class="undo-banner-content">
+                <span>Commit creado con éxito.</span>
+                <button type="button" class="undo-btn" id="undo-commit-btn">Deshacer</button>
+              </div>
+            </div>
+
+            <!-- Stash Banner -->
+            <div class="stash-banner" id="stash-banner" style="display: none;">
+              <div class="stash-banner-content">
+                <div class="stash-banner-header">
+                  <svg class="stash-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                    <rect x="1" y="3" width="22" height="5"></rect>
+                    <line x1="10" y1="12" x2="14" y2="12"></line>
+                  </svg>
+                  <span class="stash-banner-title">Cambios en Stash</span>
+                </div>
+                <span class="stash-banner-desc">Tienes cambios guardados en stash de una sesión anterior en este branch.</span>
+                <div class="stash-banner-actions">
+                  <button type="button" class="gx-btn primary sm" id="stash-restore-btn">Restaurar cambios</button>
+                  <button type="button" class="gx-btn secondary sm" id="stash-discard-btn">Descartar</button>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Commit Form -->
+            <div class="commit-form" id="commit-form">
+              <div class="commit-avatar" id="commit-avatar-initials">?</div>
+              <div class="commit-inputs">
+                <input
+                  type="text"
+                  id="commit-title"
+                  class="commit-title-input"
+                  placeholder="Resumen (requerido)"
+                  maxlength="72"
+                />
+                <textarea
+                  id="commit-description"
+                  class="commit-desc-input"
+                  placeholder="Descripción (opcional)"
+                  rows="2"
+                ></textarea>
+              </div>
+              <label class="commit-amend-label" id="commit-amend-wrap">
+                <input type="checkbox" id="commit-amend-checkbox" />
+                <span>Enmendar último commit</span>
+              </label>
+              <button class="commit-btn" id="commit-btn" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg>
+                <span>Commit to <strong id="commit-branch-name">main</strong></span>
+              </button>
+            </div>
+          </aside>
+
+          <!-- Right: Diff viewer -->
+          <section class="diff-panel" id="diff-panel">
+            <div class="diff-topbar" id="diff-topbar">
+              <div class="diff-file-info" id="diff-file-info">
+                <span class="diff-filename" id="diff-filename">Selecciona un archivo</span>
+                <span class="diff-filepath" id="diff-filepath"></span>
+              </div>
+              <div class="diff-stats" id="diff-stats"></div>
+            </div>
+            <div class="diff-content" id="diff-content">
+              <div class="diff-placeholder" id="diff-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                <p>Selecciona un archivo de la lista de cambios para ver sus diferencias</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- ====== VIEW: HISTORY ====== -->
+        <div class="view hidden" id="view-history">
+          <!-- Left: Commit list -->
+          <aside class="history-sidebar" style="width: 300px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border);">
+            <div class="changes-header">
+              <h2 class="panel-heading">Historial de commits</h2>
+            </div>
+            <div class="changes-list" id="history-list" style="flex: 1; overflow-y: auto;">
+              <div class="empty-state"><p>Sin historial</p></div>
+            </div>
+          </aside>
+
+          <!-- Middle: Modified files list -->
+          <aside class="history-files-sidebar" id="history-files-panel" style="width: 280px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); background: var(--bg-1);">
+            <div class="changes-header" style="border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 12px 16px;">
+              <span id="history-files-count" style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Selecciona un commit</span>
+            </div>
+            <div class="changes-list" id="history-files-list" style="flex: 1; overflow-y: auto;">
+              <div class="empty-state">
+                <p style="font-size:11px; color:var(--text-muted);">Selecciona un commit para ver sus archivos</p>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Right: Commit detail -->
+          <section class="diff-panel" id="history-diff-panel" style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+            <div class="diff-topbar" id="history-diff-topbar">
+              <div class="diff-file-info" id="history-diff-file-info">
+                <span class="diff-filename" id="history-diff-filename">Selecciona un archivo</span>
+                <span class="diff-filepath" id="history-diff-filepath"></span>
+              </div>
+              <div class="diff-stats" id="history-diff-stats"></div>
+            </div>
+            <div class="diff-content" id="history-diff-content" style="flex: 1; overflow: auto; background: var(--bg-0);">
+              <div class="diff-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                <p>Selecciona un archivo para ver sus diferencias</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- ====== VIEW: PROFILES ====== -->
+        <div class="view hidden" id="view-profiles">
+          <!-- Left: Profile list -->
+          <aside class="changes-sidebar">
+            <div class="changes-header">
+              <h2 class="panel-heading">Perfiles Git</h2>
+              <button class="icon-btn" id="add-profile-btn" title="Crear nuevo perfil">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </div>
+            <div class="changes-list" id="profiles-list"></div>
+          </aside>
+
+          <!-- Right: Profile inspector -->
+          <section class="diff-panel" id="profile-inspector">
+            <div class="diff-topbar">
+              <div class="diff-file-info">
+                <span class="diff-filename" id="profile-inspector-name">Selecciona un perfil</span>
+                <span class="diff-filepath" id="profile-inspector-email"></span>
+              </div>
+              <div class="diff-stats" id="profile-inspector-actions"></div>
+            </div>
+            <div class="diff-content" id="profile-inspector-content">
+              <div class="diff-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <p>Selecciona un perfil para ver su configuración</p>
+              </div>
+            </div>
+          </section>
+        </div>
 
       </main>
 
-      <!-- Full-screen Doctor Dialog overlay -->
-      <dialog id="doctor-modal" class="doctor-dialog">
-        <div class="dialog-card">
-          <div class="dialog-header">
-            <div class="dialog-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m12 3-1.912 5.886H3.882l4.992 3.63L6.96 18.4l5.04-3.66 5.04 3.66-1.912-5.884 4.992-3.63h-6.206L12 3Z" />
-              </svg>
-              <h2>Diagnóstico del Sistema: GitX Doctor</h2>
+      <!-- ===================== MODALS ===================== -->
+
+      <!-- Doctor Modal -->
+      <dialog id="doctor-modal" class="gx-dialog">
+        <div class="gx-dialog-card">
+          <div class="gx-dialog-header">
+            <div class="gx-dialog-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.886H3.882l4.992 3.63L6.96 18.4l5.04-3.66 5.04 3.66-1.912-5.884 4.992-3.63h-6.206L12 3Z"/></svg>
+              <h2>GitX Doctor</h2>
             </div>
-            <button class="close-dialog-btn" id="close-doctor-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
+            <button class="close-btn" id="close-doctor-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
           </div>
-          
-          <div class="dialog-body">
-            <p class="dialog-intro">GitX Doctor escanea tu máquina para asegurar que Git, SSH y GPG estén correctamente configurados para la gestión multi-perfil.</p>
-            
-            <div class="doctor-checklist" id="doctor-check-items">
-              <!-- Rendered dynamically -->
-            </div>
+          <div class="gx-dialog-body">
+            <p class="dialog-intro">Escanea tu máquina para verificar Git, SSH y GPG para gestión multi-perfil.</p>
+            <div class="doctor-list" id="doctor-check-items"></div>
           </div>
-
-          <div class="dialog-footer">
-            <button class="secondary-btn" id="doctor-cancel-btn">Cerrar</button>
-            <button class="primary-btn" id="doctor-fix-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-              </svg>
-              <span>Reparar Problemas automáticamente</span>
+          <div class="gx-dialog-footer">
+            <button class="gx-btn secondary" id="doctor-cancel-btn">Cerrar</button>
+            <button class="gx-btn primary" id="doctor-fix-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              Reparar Automáticamente
             </button>
           </div>
         </div>
       </dialog>
 
-      <!-- New Profile Modal overlay -->
-      <dialog id="new-profile-modal" class="profile-dialog">
-        <div class="dialog-card">
-          <div class="dialog-header">
-            <h2>Crear Nuevo Perfil GitX</h2>
-            <button class="close-dialog-btn" id="close-new-profile-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
+      <!-- New Profile Modal -->
+      <dialog id="new-profile-modal" class="gx-dialog">
+        <div class="gx-dialog-card">
+          <div class="gx-dialog-header">
+            <h2>Crear Nuevo Perfil</h2>
+            <button class="close-btn" id="close-new-profile-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
           </div>
           <form id="new-profile-form" method="dialog">
-            <div class="dialog-body">
+            <div class="gx-dialog-body">
               <div class="form-group">
-                <label for="prof-id">Nombre del Perfil (ID único)</label>
+                <label for="prof-id">ID del Perfil</label>
                 <input type="text" id="prof-id" placeholder="ej: freelance, github-corp" required pattern="^[a-zA-Z0-9_-]+$" />
-                <span class="helper-text">Solo letras, números, guiones y guiones bajos.</span>
+                <span class="helper">Solo letras, números, guiones y guiones bajos.</span>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="prof-name">Nombre Completo Git</label>
-                  <input type="text" id="prof-name" placeholder="ej: Alex Developer" required />
+                  <label for="prof-name">Nombre Git</label>
+                  <input type="text" id="prof-name" placeholder="Alex Developer" required />
                 </div>
                 <div class="form-group">
                   <label for="prof-email">Email Git</label>
-                  <input type="email" id="prof-email" placeholder="ej: alex@work.com" required />
+                  <input type="email" id="prof-email" placeholder="alex@work.com" required />
                 </div>
               </div>
-              <div class="form-group checkbox-group">
-                <label class="checkbox-label">
-                  <input type="checkbox" id="prof-ssh" checked />
-                  <span class="custom-checkbox"></span>
-                  <span>Generar clave SSH ed25519 automáticamente</span>
-                </label>
-              </div>
+              <label class="checkbox-row">
+                <input type="checkbox" id="prof-ssh" checked />
+                <span class="checkmark"></span>
+                Generar clave SSH ed25519 automáticamente
+              </label>
               <div class="form-group">
-                <label for="prof-gpg">Clave de firma GPG (Opcional)</label>
-                <input type="text" id="prof-gpg" placeholder="ej: ABC123DEF456" />
+                <label for="prof-gpg">Clave GPG (Opcional)</label>
+                <input type="text" id="prof-gpg" placeholder="ABC123DEF456" />
               </div>
             </div>
-            <div class="dialog-footer">
-              <button type="button" class="secondary-btn" id="new-profile-cancel">Cancelar</button>
-              <button type="submit" class="primary-btn">Crear Perfil</button>
+            <div class="gx-dialog-footer">
+              <button type="button" class="gx-btn secondary" id="new-profile-cancel">Cancelar</button>
+              <button type="submit" class="gx-btn primary">Crear Perfil</button>
             </div>
           </form>
         </div>
       </dialog>
 
-      <!-- Link Local Repo Modal overlay -->
-      <dialog id="link-repo-modal" class="repo-dialog">
-        <div class="dialog-card">
-          <div class="dialog-header">
-            <h2>Vincular Carpeta Local Existente</h2>
-            <button class="close-dialog-btn" id="close-link-repo-btn" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
+      <!-- Link Local Repo Modal -->
+      <dialog id="link-repo-modal" class="gx-dialog">
+        <div class="gx-dialog-card">
+          <div class="gx-dialog-header">
+            <h2>Vincular Carpeta Local</h2>
+            <button class="close-btn" id="close-link-repo-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
           </div>
           <form id="link-repo-form" method="dialog">
-            <div class="dialog-body">
+            <div class="gx-dialog-body">
               <div class="form-group">
-                <label for="link-path">Ruta Física del Repositorio</label>
-                <div style="display: flex; gap: 8px;">
-                  <input type="text" id="link-path" placeholder="Ej: /Users/alex/Documents/personal/mi-proyecto" required style="flex: 1;" />
-                  <button type="button" class="secondary-btn" id="browse-link-path-btn" style="height: 38px; padding: 0 12px; display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <label for="link-path">Ruta del Repositorio</label>
+                <div class="input-with-btn">
+                  <input type="text" id="link-path" placeholder="/Users/alex/Documents/mi-proyecto" required />
+                  <button type="button" class="gx-btn secondary sm" id="browse-link-path-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                     Buscar...
                   </button>
                 </div>
-                <span class="helper-text">Debe ser una carpeta local que contenga un repositorio Git (.git).</span>
+                <span class="helper">Debe contener una carpeta .git</span>
               </div>
               <div class="form-group">
-                <label for="link-profile">Asociar Perfil Inicial</label>
-                <select id="link-profile" required style="background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; height: 38px; padding: 0 12px; color: var(--text-main); font-size: 0.85rem; outline: none; width: 100%;">
-                  <!-- Dynamically populated -->
-                </select>
+                <label for="link-profile">Perfil Inicial</label>
+                <select id="link-profile" class="gx-select" required></select>
               </div>
             </div>
-            <div class="dialog-footer">
-              <button type="button" class="secondary-btn" id="link-repo-cancel">Cancelar</button>
-              <button type="submit" class="primary-btn">Vincular Carpeta</button>
+            <div class="gx-dialog-footer">
+              <button type="button" class="gx-btn secondary" id="link-repo-cancel">Cancelar</button>
+              <button type="submit" class="gx-btn primary">Vincular</button>
             </div>
           </form>
         </div>
       </dialog>
 
-      <!-- Clone Remote Repo Modal overlay -->
-      <dialog id="clone-repo-modal" class="repo-dialog">
-        <div class="dialog-card">
-          <div class="dialog-header">
-            <h2>Clonar Repositorio Remoto</h2>
-            <button class="close-dialog-btn" id="close-clone-repo-btn" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
+      <!-- Clone Remote Repo Modal -->
+      <dialog id="clone-repo-modal" class="gx-dialog">
+        <div class="gx-dialog-card">
+          <div class="gx-dialog-header">
+            <h2>Clonar Repositorio</h2>
+            <button class="close-btn" id="close-clone-repo-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
           </div>
           <form id="clone-repo-form" method="dialog">
-            <div class="dialog-body">
+            <div class="gx-dialog-body">
               <div class="form-group">
-                <label for="clone-url">URL del Repositorio Remoto (HTTPS o SSH)</label>
-                <input type="text" id="clone-url" placeholder="Ej: git@github.com:usuario/mi-proyecto.git" required />
+                <label for="clone-url">URL Remota (HTTPS o SSH)</label>
+                <input type="text" id="clone-url" placeholder="git@github.com:usuario/repo.git" required />
               </div>
               <div class="form-group">
-                <label for="clone-path">Carpeta de Destino Local</label>
-                <div style="display: flex; gap: 8px;">
-                  <input type="text" id="clone-path" placeholder="Ej: /Users/alex/Documents/personal/mi-proyecto" required style="flex: 1;" />
-                  <button type="button" class="secondary-btn" id="browse-clone-path-btn" style="height: 38px; padding: 0 12px; display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <label for="clone-path">Carpeta Destino</label>
+                <div class="input-with-btn">
+                  <input type="text" id="clone-path" placeholder="/Users/alex/Documents/mi-proyecto" required />
+                  <button type="button" class="gx-btn secondary sm" id="browse-clone-path-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                     Buscar...
                   </button>
                 </div>
               </div>
               <div class="form-group">
-                <label for="clone-profile">Asociar Perfil Inicial</label>
-                <select id="clone-profile" required style="background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; height: 38px; padding: 0 12px; color: var(--text-main); font-size: 0.85rem; outline: none; width: 100%;">
-                  <!-- Dynamically populated -->
-                </select>
+                <label for="clone-profile">Perfil Inicial</label>
+                <select id="clone-profile" class="gx-select" required></select>
               </div>
             </div>
-            <div class="dialog-footer">
-              <button type="button" class="secondary-btn" id="clone-repo-cancel">Cancelar</button>
-              <button type="submit" class="primary-btn" id="clone-submit-btn">Clonar e Importar</button>
+            <div class="gx-dialog-footer">
+              <button type="button" class="gx-btn secondary" id="clone-repo-cancel">Cancelar</button>
+              <button type="submit" class="gx-btn primary" id="clone-submit-btn">Clonar e Importar</button>
             </div>
           </form>
+        </div>
+      </dialog>
+
+      <!-- Switch Branch Modal -->
+      <dialog id="switch-branch-modal" class="gx-dialog">
+        <div class="gx-dialog-card" style="width: 500px;">
+          <div class="gx-dialog-header">
+            <div class="gx-dialog-title" style="color: var(--accent);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M4 4l17 17"/></svg>
+              <h2>Cambiar de Branch</h2>
+            </div>
+            <button class="close-btn" id="close-switch-branch-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="gx-dialog-body" style="gap: 16px;">
+            <p class="dialog-intro" style="font-size: 13px; margin-bottom: 4px;">
+              Tienes cambios sin confirmar en este branch. ¿Qué te gustaría hacer con ellos al cambiar a <strong id="switch-target-branch-name" style="color:var(--text-primary)">—</strong>?
+            </p>
+
+            <div class="branch-options-list" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Option 1: Leave changes (Stash) -->
+              <label class="branch-option-card active" id="option-leave-label">
+                <input type="radio" name="switch-branch-action" id="option-leave-changes" value="leave" checked />
+                <div class="branch-option-info">
+                  <span class="branch-option-title">Dejar mis cambios en <span id="switch-current-branch-name-1">—</span></span>
+                  <span class="branch-option-desc">Tus cambios se guardarán en un stash temporal en este branch para cuando regreses.</span>
+                </div>
+              </label>
+
+              <!-- Option 2: Bring changes (Checkout directly) -->
+              <label class="branch-option-card" id="option-bring-label">
+                <input type="radio" name="switch-branch-action" id="option-bring-changes" value="bring" />
+                <div class="branch-option-info">
+                  <span class="branch-option-title">Llevar mis cambios a <span id="switch-target-branch-name-2">—</span></span>
+                  <span class="branch-option-desc">Tus cambios se moverán contigo al nuevo branch si no hay conflictos de archivos.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="gx-dialog-footer">
+            <button type="button" class="gx-btn secondary" id="switch-branch-cancel">Cancelar</button>
+            <button type="button" class="gx-btn primary" id="switch-branch-submit">Cambiar de Branch</button>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- Merge Branches Modal -->
+      <dialog id="merge-modal" class="gx-dialog">
+        <div class="gx-dialog-card" style="width: 520px;">
+          <div class="gx-dialog-header">
+            <div class="gx-dialog-title" style="color: var(--accent);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent); width:18px; height:18px;"><path d="M18 3v10M6 21V11M18 13a4 4 0 0 1-4 4h-4a4 4 0 0 0-4 4"/></svg>
+              <h2>Fusionar en <strong id="merge-active-branch-title" style="color:var(--text-primary)">—</strong></h2>
+            </div>
+            <button class="close-btn" id="close-merge-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="gx-dialog-body" style="gap: 14px;">
+            <p class="dialog-intro" style="font-size: 12px; margin-bottom: 2px;">
+              Selecciona una rama para fusionar sus cambios e historial en <strong id="merge-active-branch-body" style="color:var(--text-primary)">—</strong>:
+            </p>
+
+            <!-- Search input -->
+            <div class="picker-search-wrap" style="border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-1);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px; color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="merge-branch-search" placeholder="Buscar rama..." autocomplete="off" style="padding: 4px 0;" />
+            </div>
+
+            <!-- Scrollable branches list -->
+            <div class="picker-list" id="merge-branch-list" style="max-height: 180px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-1);"></div>
+
+            <!-- Preview Card -->
+            <div id="merge-preview-card" class="merge-preview-card" style="display: none;">
+              <div class="merge-preview-header">
+                <span class="merge-preview-icon"></span>
+                <span class="merge-preview-title"></span>
+              </div>
+              <p class="merge-preview-desc"></p>
+            </div>
+          </div>
+          <div class="gx-dialog-footer">
+            <button type="button" class="gx-btn secondary" id="merge-cancel">Cancelar</button>
+            <button type="button" class="gx-btn primary" id="merge-submit" disabled>Fusionar ramas</button>
+          </div>
         </div>
       </dialog>
 
       <!-- Drag & Drop overlay -->
-      <div id="drag-overlay" class="drag-drop-overlay">
-        <div class="drag-overlay-content">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="drag-icon">
+      <div id="drag-overlay" class="drag-overlay">
+        <div class="drag-overlay-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-            <polyline points="12 11 12 17 9 14 12 17 15 14" style="stroke-linecap: round; stroke-linejoin: round;"/>
+            <polyline points="12 11 12 17 9 14 12 17 15 14"/>
           </svg>
-          <h3>Vincular Repositorio</h3>
-          <p>Suelta la carpeta aquí para vincularla a tus identidades</p>
+          <h3>Soltar para vincular repositorio</h3>
+          <p>Suelta la carpeta aquí para agregarla a GitX</p>
         </div>
       </div>
+
+      <!-- Toast notifications container -->
+      <div id="toast-container" class="toast-container"></div>
+
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
