@@ -16,6 +16,14 @@
       <!-- ===================== TOP BAR ===================== -->
       <header class="topbar">
         <div class="topbar-left">
+          <!-- Sidebar Toggle Button -->
+          <button type="button" class="icon-btn" id="sidebar-toggle-btn" title="Alternar panel lateral" style="margin-right: 4px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 3v18"/>
+            </svg>
+          </button>
+
           <!-- Logo -->
           <div class="logo">
             <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -152,6 +160,14 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
             Sync
           </button>
+
+          <button class="topbar-action-btn" id="preferences-btn" title="Preferencias y Temas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            Ajustes
+          </button>
         </div>
       </header>
 
@@ -263,29 +279,29 @@
         <!-- ====== VIEW: HISTORY ====== -->
         <div class="view hidden" id="view-history">
           <!-- Left: Commit list -->
-          <aside class="history-sidebar" style="width: 300px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border);">
+          <aside class="history-sidebar">
             <div class="changes-header">
               <h2 class="panel-heading">Historial de commits</h2>
             </div>
-            <div class="changes-list" id="history-list" style="flex: 1; overflow-y: auto;">
+            <div class="changes-list" id="history-list">
               <div class="empty-state"><p>Sin historial</p></div>
             </div>
           </aside>
 
           <!-- Middle: Modified files list -->
-          <aside class="history-files-sidebar" id="history-files-panel" style="width: 280px; flex-shrink: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); background: var(--bg-1);">
-            <div class="changes-header" style="border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 12px 16px;">
-              <span id="history-files-count" style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Selecciona un commit</span>
+          <aside class="history-files-sidebar" id="history-files-panel">
+            <div class="history-files-header">
+              <span id="history-files-count">Selecciona un commit</span>
             </div>
-            <div class="changes-list" id="history-files-list" style="flex: 1; overflow-y: auto;">
+            <div class="changes-list" id="history-files-list">
               <div class="empty-state">
-                <p style="font-size:11px; color:var(--text-muted);">Selecciona un commit para ver sus archivos</p>
+                <p>Selecciona un commit para ver sus archivos</p>
               </div>
             </div>
           </aside>
 
           <!-- Right: Commit detail -->
-          <section class="diff-panel" id="history-diff-panel" style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+          <section class="diff-panel" id="history-diff-panel">
             <div class="diff-topbar" id="history-diff-topbar">
               <div class="diff-file-info" id="history-diff-file-info">
                 <span class="diff-filename" id="history-diff-filename">Selecciona un archivo</span>
@@ -293,7 +309,7 @@
               </div>
               <div class="diff-stats" id="history-diff-stats"></div>
             </div>
-            <div class="diff-content" id="history-diff-content" style="flex: 1; overflow: auto; background: var(--bg-0);">
+            <div class="diff-content" id="history-diff-content">
               <div class="diff-placeholder">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -568,6 +584,60 @@
           <div class="gx-dialog-footer">
             <button type="button" class="gx-btn secondary" id="merge-cancel">Cancelar</button>
             <button type="button" class="gx-btn primary" id="merge-submit" disabled>Fusionar ramas</button>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- Preferences / Ajustes Modal -->
+      <dialog id="preferences-modal" class="gx-dialog">
+        <div class="gx-dialog-card" style="width: 480px;">
+          <div class="gx-dialog-header">
+            <div class="gx-dialog-title" style="color: var(--accent);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <h2>Preferencias de GitX</h2>
+            </div>
+            <button class="close-btn" id="close-preferences-btn" type="button" title="Cerrar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="gx-dialog-body" style="gap: 16px;">
+            <p class="dialog-intro">
+              Personaliza el tema, la tipografía y el comportamiento de GitX Desktop para que se adapte mejor a tu flujo de trabajo.
+            </p>
+
+            <div class="form-group">
+              <label for="pref-theme">Tema de la interfaz</label>
+              <select id="pref-theme" class="gx-select">
+                <option value="system">Tema del sistema (Light / Dark)</option>
+                <option value="dark">Oscuro (Predeterminado)</option>
+                <option value="light">Claro (GitHub Style)</option>
+                <option value="cyberpunk">Cyberpunk Neon (Vibrante)</option>
+                <option value="high-contrast">Alto Contraste</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pref-os">Modo de sistema operativo (Scrollbars y fuentes)</label>
+              <select id="pref-os" class="gx-select">
+                <option value="auto">Auto-detectar sistema operativo</option>
+                <option value="macos">macOS (SF Pro, scrollbars delgados)</option>
+                <option value="windows">Windows (Segoe UI, scrollbars estándar)</option>
+                <option value="linux">Linux (Ubuntu/Inter, scrollbars estilo GTK)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-row" style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="pref-auto-collapse" checked />
+                <span>Colapsar barras laterales automáticamente en pantallas pequeñas</span>
+              </label>
+            </div>
+          </div>
+          <div class="gx-dialog-footer">
+            <button type="button" class="gx-btn primary" id="preferences-save-btn">Guardar y Aplicar</button>
           </div>
         </div>
       </dialog>

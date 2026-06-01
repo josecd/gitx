@@ -28,6 +28,12 @@ const state = {
   stagedFiles: new Set(),
 
   doctorFixing: false,
+
+  preferences: {
+    theme: 'system',
+    osMode: 'auto',
+    autoCollapse: true,
+  },
 };
 
 // ============================================================
@@ -176,6 +182,16 @@ const els = {
 
   // Toast container
   toastContainer:    $('toast-container'),
+
+  // Preferences / Ajustes elements
+  preferencesBtn:    $('preferences-btn'),
+  preferencesModal:  $('preferences-modal'),
+  closePreferencesBtn:$('close-preferences-btn'),
+  preferencesSaveBtn:$('preferences-save-btn'),
+  prefTheme:         $('pref-theme'),
+  prefOS:            $('pref-os'),
+  prefAutoCollapse:  $('pref-auto-collapse'),
+  sidebarToggleBtn:  $('sidebar-toggle-btn'),
 };
 
 // ============================================================
@@ -198,6 +214,113 @@ function showToast(type, title, msg = '', duration = 3500) {
   `;
   els.toastContainer.appendChild(el);
   setTimeout(() => el.remove(), duration);
+}
+
+// ============================================================
+// PREFERENCES & THEMES SYSTEM
+// ============================================================
+let wasCollapsedByResize = false;
+const themeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+function detectOS() {
+  const ua = navigator.userAgent;
+  if (ua.indexOf('Mac') !== -1) return 'macos';
+  if (ua.indexOf('Win') !== -1) return 'windows';
+  if (ua.indexOf('Linux') !== -1) return 'linux';
+  return 'linux';
+}
+
+function applyTheme(theme) {
+  // Remove all theme classes first
+  document.body.classList.remove('theme-light', 'theme-dark', 'theme-cyberpunk', 'theme-high-contrast', 'theme-system-light', 'theme-system-dark');
+  
+  if (theme === 'system') {
+    if (themeMedia.matches) {
+      document.body.classList.add('theme-system-dark');
+    } else {
+      document.body.classList.add('theme-system-light');
+    }
+  } else {
+    document.body.classList.add(`theme-${theme}`);
+  }
+}
+
+function applyOSMode(osMode) {
+  // Remove all os classes first
+  document.body.classList.remove('os-macos', 'os-windows', 'os-linux');
+  
+  const resolvedOS = osMode === 'auto' ? detectOS() : osMode;
+  document.body.classList.add(`os-${resolvedOS}`);
+}
+
+function handleAutoCollapse() {
+  if (state.preferences.autoCollapse) {
+    if (window.innerWidth < 900) {
+      if (!document.body.classList.contains('sidebar-collapsed')) {
+        document.body.classList.add('sidebar-collapsed');
+        wasCollapsedByResize = true;
+      }
+    } else {
+      if (wasCollapsedByResize && document.body.classList.contains('sidebar-collapsed')) {
+        document.body.classList.remove('sidebar-collapsed');
+        wasCollapsedByResize = false;
+      }
+    }
+  }
+}
+
+function applyPreferences() {
+  applyTheme(state.preferences.theme);
+  applyOSMode(state.preferences.osMode);
+  handleAutoCollapse();
+}
+
+function initPreferences() {
+  // Load preferences from localStorage
+  const savedTheme = localStorage.getItem('gitx-pref-theme') || 'system';
+  const savedOS = localStorage.getItem('gitx-pref-os') || 'auto';
+  const savedAutoCollapse = localStorage.getItem('gitx-pref-auto-collapse') !== 'false'; // default true
+  
+  state.preferences = {
+    theme: savedTheme,
+    osMode: savedOS,
+    autoCollapse: savedAutoCollapse,
+  };
+  
+  // Set UI inputs to match loaded state
+  if (els.prefTheme) els.prefTheme.value = savedTheme;
+  if (els.prefOS) els.prefOS.value = savedOS;
+  if (els.prefAutoCollapse) els.prefAutoCollapse.checked = savedAutoCollapse;
+  
+  applyPreferences();
+  
+  // Event listener for media scheme changes
+  themeMedia.addEventListener('change', () => {
+    if (state.preferences.theme === 'system') {
+      applyTheme('system');
+    }
+  });
+  
+  // Event listener for window resize
+  window.addEventListener('resize', handleAutoCollapse);
+}
+
+function savePreferences() {
+  if (els.prefTheme) {
+    state.preferences.theme = els.prefTheme.value;
+    localStorage.setItem('gitx-pref-theme', state.preferences.theme);
+  }
+  if (els.prefOS) {
+    state.preferences.osMode = els.prefOS.value;
+    localStorage.setItem('gitx-pref-os', state.preferences.osMode);
+  }
+  if (els.prefAutoCollapse) {
+    state.preferences.autoCollapse = els.prefAutoCollapse.checked;
+    localStorage.setItem('gitx-pref-auto-collapse', state.preferences.autoCollapse);
+  }
+  
+  applyPreferences();
+  showToast('success', 'Preferencias guardadas', 'Los cambios de diseño y comportamiento se han aplicado correctamente.');
 }
 
 // ============================================================
@@ -2155,12 +2278,52 @@ function initEvents() {
       if (els.stashRestoreBtn) els.stashRestoreBtn.disabled = false;
     }
   });
+
+  // Preferences & Sidebar Toggle Events
+  if (els.preferencesBtn && els.preferencesModal) {
+    els.preferencesBtn.addEventListener('click', () => {
+      // Reload UI inputs from state before showing
+      if (els.prefTheme) els.prefTheme.value = state.preferences.theme;
+      if (els.prefOS) els.prefOS.value = state.preferences.osMode;
+      if (els.prefAutoCollapse) els.prefAutoCollapse.checked = state.preferences.autoCollapse;
+      els.preferencesModal.showModal();
+    });
+  }
+
+  if (els.closePreferencesBtn && els.preferencesModal) {
+    els.closePreferencesBtn.addEventListener('click', () => {
+      els.preferencesModal.close();
+    });
+  }
+
+  if (els.preferencesSaveBtn && els.preferencesModal) {
+    els.preferencesSaveBtn.addEventListener('click', () => {
+      savePreferences();
+      els.preferencesModal.close();
+    });
+  }
+
+  if (els.preferencesModal) {
+    els.preferencesModal.addEventListener('click', (e) => {
+      if (e.target === els.preferencesModal) {
+        els.preferencesModal.close();
+      }
+    });
+  }
+
+  if (els.sidebarToggleBtn) {
+    els.sidebarToggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-collapsed');
+      wasCollapsedByResize = false; // User choice overrides resize behavior
+    });
+  }
 }
 
 // ============================================================
 // INIT
 // ============================================================
 async function init() {
+  initPreferences();
   initEvents();
   initDragAndDrop();
 
