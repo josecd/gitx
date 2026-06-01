@@ -357,25 +357,66 @@ body.os-linux ::-webkit-scrollbar-thumb:hover {
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 /* ========================================
+   BASE LAYOUT — full-height app shell
+   ======================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-0);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ========================================
    TOP BAR
    ======================================== */
+
 .topbar {
   height: var(--topbar-h);
   background: var(--bg-1);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 12px;
   flex-shrink: 0;
   user-select: none;
-  gap: 8px;
+  gap: 4px;
+  overflow: hidden;
+  min-width: 0;
 }
 
-.topbar-left, .topbar-right {
+.topbar-left {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
 .topbar-sep {
@@ -416,13 +457,16 @@ body.os-linux ::-webkit-scrollbar-thumb:hover {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 10px;
+  gap: 6px;
+  padding: 4px 8px;
   border-radius: var(--radius);
   border: 1px solid transparent;
   cursor: pointer;
   transition: background var(--transition), border-color var(--transition);
-  max-width: 220px;
+  max-width: 200px;
+  min-width: 0;
+  flex-shrink: 1;
+  overflow: hidden;
 }
 .topbar-picker:hover {
   background: var(--bg-3);
@@ -650,6 +694,8 @@ body.os-linux ::-webkit-scrollbar-thumb:hover {
   cursor: pointer;
   transition: background var(--transition), color var(--transition);
   position: relative;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .topbar-tab svg { width: 14px; height: 14px; }
 .topbar-tab:hover { background: var(--bg-3); color: var(--text-primary); }
@@ -730,6 +776,7 @@ body.os-linux ::-webkit-scrollbar-thumb:hover {
   cursor: pointer;
   transition: all var(--transition);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .remote-action-btn:not(:disabled):hover {
   background: var(--bg-3);
@@ -2049,5 +2096,134 @@ body.sidebar-collapsed .history-files-sidebar {
   gap: 8px;
   margin-top: 2px;
 }
+
+/* ========================================
+   RESPONSIVE LAYOUT
+   ======================================== */
+
+/* ---- Topbar: make it scrollable and prevent overflow ---- */
+.topbar {
+  overflow: hidden;
+}
+
+.topbar-left {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.topbar-right {
+  flex-shrink: 0;
+}
+
+/* ---- Medium screens: hide picker labels, shrink pickers ---- */
+@media (max-width: 1100px) {
+  .topbar-picker {
+    max-width: 140px;
+  }
+  .picker-label {
+    display: none;
+  }
+  .picker-value {
+    font-size: 11px;
+  }
+}
+
+/* ---- Small-medium screens: hide tab text, shrink more ---- */
+@media (max-width: 920px) {
+  .topbar-picker {
+    max-width: 100px;
+    padding: 4px 6px;
+    gap: 4px;
+  }
+  .picker-meta {
+    display: none;
+  }
+  .topbar-tab span {
+    display: none;
+  }
+  .topbar-tab {
+    padding: 5px 8px;
+  }
+  .topbar-action-btn span {
+    display: none;
+  }
+  .topbar-action-btn {
+    padding: 5px 8px;
+    gap: 0;
+    border: none;
+    background: none;
+  }
+  .topbar-action-btn:hover {
+    background: var(--bg-3);
+  }
+  .topbar-sep {
+    margin: 0 2px;
+  }
+  .remote-action-btn {
+    padding: 5px 8px;
+  }
+  .remote-action-meta {
+    display: none;
+  }
+}
+
+/* ---- Small screens: collapse sidebar automatically via body class ---- */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 6px;
+    gap: 4px;
+  }
+  .logo-text {
+    display: none;
+  }
+  .topbar-sep:not(:first-of-type) {
+    display: none;
+  }
+  .topbar-tabs {
+    gap: 0;
+  }
+  .remote-action-text {
+    display: none;
+  }
+}
+
+/* ---- Extra small: hide branch picker text ---- */
+@media (max-width: 600px) {
+  #branch-picker-btn .picker-meta,
+  #profile-picker-btn .picker-meta {
+    display: none;
+  }
+  .topbar-picker {
+    max-width: 36px;
+    padding: 4px 6px;
+  }
+}
+
+/* ---- Sidebar collapse animation ---- */
+.changes-sidebar,
+.history-sidebar,
+.history-files-sidebar {
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease,
+              min-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.sidebar-collapsed .changes-sidebar,
+body.sidebar-collapsed .history-sidebar,
+body.sidebar-collapsed .history-files-sidebar {
+  width: 0 !important;
+  min-width: 0 !important;
+  opacity: 0;
+  overflow: hidden;
+  border-right: none;
+  pointer-events: none;
+}
+
+/* When sidebar is collapsed, diff panel fills width */
+body.sidebar-collapsed .diff-panel {
+  flex: 1;
+}
+
 
 
