@@ -7,12 +7,16 @@
     "dev": "concurrently \"vite\" \"node server.js\"",
     "server": "node server.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tauri:build-sidecar": "node scripts/build-sidecar.js",
+    "tauri:dev": "npm run tauri:build-sidecar && npx tauri dev",
+    "tauri:build": "npm run tauri:build-sidecar && npx tauri build"
   },
   "devDependencies": {
     "concurrently": "^10.0.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "pkg": "^5.8.1",
     "vite": "^8.0.12"
   }
 }

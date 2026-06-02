@@ -15,16 +15,16 @@
 
       <!-- ===================== TOP BAR ===================== -->
       <header class="topbar">
+
+        <!-- ── LEFT: Sidebar toggle · Logo · Pickers ── -->
         <div class="topbar-left">
-          <!-- Sidebar Toggle Button -->
-          <button type="button" class="icon-btn" id="sidebar-toggle-btn" title="Alternar panel lateral" style="margin-right: 4px;">
+          <button type="button" class="icon-btn tb-icon-btn" id="sidebar-toggle-btn" title="Alternar panel lateral">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2"/>
               <path d="M9 3v18"/>
             </svg>
           </button>
 
-          <!-- Logo -->
           <div class="logo">
             <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
@@ -32,11 +32,11 @@
             <span class="logo-text">GitX</span>
           </div>
 
-          <div class="topbar-sep"></div>
+          <div class="tb-divider"></div>
 
-          <!-- Current Repository Picker -->
+          <!-- Repo picker -->
           <div class="topbar-picker" id="repo-picker-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="picker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="3" width="20" height="14" rx="2"/>
               <line x1="8" y1="21" x2="16" y2="21"/>
               <line x1="12" y1="17" x2="12" y2="21"/>
@@ -46,7 +46,6 @@
               <span class="picker-value" id="current-repo-name">—</span>
             </div>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
-
             <!-- Repo Dropdown -->
             <div class="picker-menu" id="repo-menu">
               <div class="picker-search-wrap">
@@ -67,38 +66,19 @@
             </div>
           </div>
 
-          <div class="topbar-sep"></div>
-
-          <!-- Profile Picker -->
-          <div class="topbar-picker" id="profile-picker-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            <div class="picker-meta">
-              <span class="picker-label">Perfil activo</span>
-              <span class="picker-value" id="current-profile-name">—</span>
-            </div>
-            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
-            <div class="picker-menu" id="profile-menu"></div>
-          </div>
-
-          <div class="topbar-sep"></div>
-
-          <!-- Branch Picker -->
-          <div class="topbar-picker" id="branch-picker-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)">
+          <!-- Branch picker -->
+          <div class="topbar-picker tb-picker-branch" id="branch-picker-btn">
+            <svg class="picker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green)">
               <line x1="6" y1="3" x2="6" y2="15"/>
               <circle cx="18" cy="6" r="3"/>
               <circle cx="6" cy="18" r="3"/>
               <path d="M18 9a9 9 0 0 1-9 9"/>
             </svg>
             <div class="picker-meta">
-              <span class="picker-label">Branch actual</span>
+              <span class="picker-label">Branch</span>
               <span class="picker-value" id="current-branch-name">—</span>
             </div>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
-
             <!-- Branch Dropdown -->
             <div class="picker-menu" id="branch-menu">
               <div class="picker-search-wrap">
@@ -114,9 +94,8 @@
           </div>
         </div>
 
-
-        <div class="topbar-right">
-          <!-- Tab switcher: Changes / History / Profiles -->
+        <!-- ── CENTER: Tab switcher ── -->
+        <div class="topbar-center">
           <div class="topbar-tabs" role="tablist">
             <button class="topbar-tab active" id="tab-changes" role="tab" aria-selected="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -132,10 +111,10 @@
               <span>Perfiles</span>
             </button>
           </div>
+        </div>
 
-          <div class="topbar-sep"></div>
-
-          <!-- Fetch / Pull / Push button -->
+        <!-- ── RIGHT: Fetch/Pull/Push · Utilities ── -->
+        <div class="topbar-right">
           <button class="remote-action-btn" id="remote-action-btn" title="Fetch / Pull / Push desde el remoto" disabled>
             <span class="remote-action-icon" id="remote-action-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -146,31 +125,36 @@
             <span class="remote-action-meta" id="remote-action-meta"></span>
           </button>
 
-          <div class="topbar-sep"></div>
+          <div class="tb-divider"></div>
 
-          <!-- Doctor + Sync actions -->
-          <button class="topbar-action-btn" id="doctor-btn" title="GitX Doctor — Diagnóstico del Sistema">
+          <button class="tb-icon-btn" id="doctor-btn" title="GitX Doctor — Diagnóstico del Sistema">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="doctor-pulse">
               <path d="m12 3-1.912 5.886H3.882l4.992 3.63L6.96 18.4l5.04-3.66 5.04 3.66-1.912-5.884 4.992-3.63h-6.206L12 3Z"/>
             </svg>
-            <span>Doctor</span>
           </button>
 
-          <button class="topbar-action-btn" id="sync-btn" title="Sincronizar perfiles con la máquina">
+          <button class="tb-icon-btn" id="sync-btn" title="Sincronizar perfiles con la máquina">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            <span>Sync</span>
           </button>
 
-          <button class="topbar-action-btn" id="preferences-btn" title="Preferencias y Temas">
+          <button class="tb-icon-btn" id="preferences-btn" title="Preferencias y Temas">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"/>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
             </svg>
-            <span>Ajustes</span>
           </button>
-        </div>
-      </header>
 
+          <div class="tb-divider"></div>
+
+          <!-- Profile picker (Avatar-style on the far right) -->
+          <div class="topbar-picker profile-avatar-picker" id="profile-picker-btn" title="Perfil de GitX">
+            <div class="avatar-circle" id="topbar-profile-avatar">—</div>
+            <span class="picker-value" id="current-profile-name" style="display:none">—</span>
+            <div class="picker-menu right-aligned" id="profile-menu"></div>
+          </div>
+        </div>
+
+      </header>
       <!-- ===================== MAIN WORKSPACE ===================== -->
       <main class="workspace" id="workspace">
 
@@ -219,6 +203,7 @@
                 </div>
                 <span class="stash-banner-desc">Tienes cambios guardados en stash de una sesión anterior en este branch.</span>
                 <div class="stash-banner-actions">
+                  <button type="button" class="gx-btn secondary sm" id="stash-view-btn">Ver</button>
                   <button type="button" class="gx-btn primary sm" id="stash-restore-btn">Restaurar cambios</button>
                   <button type="button" class="gx-btn secondary sm" id="stash-discard-btn">Descartar</button>
                 </div>

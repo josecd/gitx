@@ -173,7 +173,12 @@ app.get('/api/repo-status', async (req, res) => {
       const { stdout: stashList } = await execAsync('git stash list', { cwd: repoPath });
       const lines = stashList.split('\n').filter(l => l.trim().length > 0);
       
-      const index = lines.findIndex(line => line.includes(`GitX-Stash: ${currentBranch}`));
+      const index = lines.findIndex(line => {
+        return line.includes(`GitX-Stash: ${currentBranch}`) || 
+               line.includes(`WIP on ${currentBranch}:`) || 
+               line.includes(`On ${currentBranch}:`) ||
+               line.includes(`!!GitHub_Desktop<${currentBranch}>`);
+      });
       if (index !== -1) {
         stashedChanges = {
           id: `stash@{${index}}`,
@@ -352,9 +357,10 @@ app.get('/api/commit-diff', async (req, res) => {
   }
 
   try {
-    const cmd = file 
-      ? `git show ${commitHash} -- "${file}"`
-      : `git show ${commitHash}`;
+    const isStash = commitHash.startsWith('stash@{');
+    const cmd = isStash
+      ? (file ? `git diff "${commitHash}^1..${commitHash}" -- "${file}"` : `git diff "${commitHash}^1..${commitHash}"`)
+      : (file ? `git show ${commitHash} -- "${file}"` : `git show ${commitHash}`);
     const { stdout: diff } = await execAsync(cmd, { cwd: repoPath });
     res.json({ diff });
   } catch (error) {
@@ -679,8 +685,10 @@ app.get('/api/git/remote-status', async (req, res) => {
   const repoPath = req.query.path;
   if (!repoPath) return res.status(400).json({ error: 'Falta path' });
   try {
-    // Silently fetch to update remote refs (no network if no remote)
-    await execAsync('git fetch --quiet', { cwd: repoPath }).catch(() => {});
+    // Silently fetch to update remote refs (no network if no remote) unless skipFetch is true
+    if (req.query.skipFetch !== 'true') {
+      await execAsync('git fetch --quiet', { cwd: repoPath }).catch(() => {});
+    }
 
     // ahead = commits we have that remote doesn't; behind = commits remote has that we don't
     const { stdout: aheadOut } = await execAsync('git rev-list --count @{u}..HEAD', { cwd: repoPath }).catch(() => ({ stdout: '0' }));

@@ -31,6 +31,15 @@
   --yellow-bg: rgba(210, 153, 34, 0.15);
   --purple: #8b949e;
 
+  --diff-addition-bg: rgba(63, 185, 80, 0.08);
+  --diff-deletion-bg: rgba(248, 81, 73, 0.08);
+  --diff-addition-bg-stage: rgba(63, 185, 80, 0.04);
+  --diff-deletion-bg-stage: rgba(248, 81, 73, 0.04);
+  --diff-addition-code: #aff5b4;
+  --diff-deletion-code: #ffdcd7;
+  --diff-addition-num: rgba(63, 185, 80, 0.6);
+  --diff-deletion-num: rgba(248, 81, 73, 0.5);
+
   --commit-btn: #238636;
   --commit-btn-hover: #2ea043;
   --commit-btn-disabled: #21262d;
@@ -77,6 +86,15 @@ body.theme-light {
   --yellow-bg: rgba(154, 103, 0, 0.12);
   --purple: #6e7781;
 
+  --diff-addition-bg: rgba(26, 127, 55, 0.08);
+  --diff-deletion-bg: rgba(207, 34, 46, 0.08);
+  --diff-addition-bg-stage: rgba(26, 127, 55, 0.04);
+  --diff-deletion-bg-stage: rgba(207, 34, 46, 0.04);
+  --diff-addition-code: #1a7f37;
+  --diff-deletion-code: #cf222e;
+  --diff-addition-num: rgba(26, 127, 55, 0.6);
+  --diff-deletion-num: rgba(207, 34, 46, 0.6);
+
   --commit-btn: #1f883d;
   --commit-btn-hover: #1a7f37;
   --commit-btn-disabled: #f6f8fa;
@@ -109,6 +127,15 @@ body.theme-dark {
   --yellow: #d29922;
   --yellow-bg: rgba(210, 153, 34, 0.15);
   --purple: #8b949e;
+
+  --diff-addition-bg: rgba(63, 185, 80, 0.08);
+  --diff-deletion-bg: rgba(248, 81, 73, 0.08);
+  --diff-addition-bg-stage: rgba(63, 185, 80, 0.04);
+  --diff-deletion-bg-stage: rgba(248, 81, 73, 0.04);
+  --diff-addition-code: #aff5b4;
+  --diff-deletion-code: #ffdcd7;
+  --diff-addition-num: rgba(63, 185, 80, 0.6);
+  --diff-deletion-num: rgba(248, 81, 73, 0.5);
 
   --commit-btn: #238636;
   --commit-btn-hover: #2ea043;
@@ -143,6 +170,15 @@ body.theme-system-light {
   --yellow-bg: rgba(154, 103, 0, 0.12);
   --purple: #6e7781;
 
+  --diff-addition-bg: rgba(26, 127, 55, 0.08);
+  --diff-deletion-bg: rgba(207, 34, 46, 0.08);
+  --diff-addition-bg-stage: rgba(26, 127, 55, 0.04);
+  --diff-deletion-bg-stage: rgba(207, 34, 46, 0.04);
+  --diff-addition-code: #1a7f37;
+  --diff-deletion-code: #cf222e;
+  --diff-addition-num: rgba(26, 127, 55, 0.6);
+  --diff-deletion-num: rgba(207, 34, 46, 0.6);
+
   --commit-btn: #1f883d;
   --commit-btn-hover: #1a7f37;
   --commit-btn-disabled: #f6f8fa;
@@ -174,6 +210,15 @@ body.theme-system-dark {
   --yellow: #d29922;
   --yellow-bg: rgba(210, 153, 34, 0.15);
   --purple: #8b949e;
+
+  --diff-addition-bg: rgba(63, 185, 80, 0.08);
+  --diff-deletion-bg: rgba(248, 81, 73, 0.08);
+  --diff-addition-bg-stage: rgba(63, 185, 80, 0.04);
+  --diff-deletion-bg-stage: rgba(248, 81, 73, 0.04);
+  --diff-addition-code: #aff5b4;
+  --diff-deletion-code: #ffdcd7;
+  --diff-addition-num: rgba(63, 185, 80, 0.6);
+  --diff-deletion-num: rgba(248, 81, 73, 0.5);
 
   --commit-btn: #238636;
   --commit-btn-hover: #2ea043;
@@ -208,6 +253,15 @@ body.theme-cyberpunk {
   --yellow-bg: rgba(255, 234, 0, 0.2);
   --purple: #d800ff;
 
+  --diff-addition-bg: rgba(57, 255, 20, 0.1);
+  --diff-deletion-bg: rgba(255, 0, 85, 0.1);
+  --diff-addition-bg-stage: rgba(57, 255, 20, 0.05);
+  --diff-deletion-bg-stage: rgba(255, 0, 85, 0.05);
+  --diff-addition-code: #39ff14;
+  --diff-deletion-code: #ff0055;
+  --diff-addition-num: rgba(57, 255, 20, 0.6);
+  --diff-deletion-num: rgba(255, 0, 85, 0.6);
+
   --commit-btn: #ff007f;
   --commit-btn-hover: #ff3399;
   --commit-btn-disabled: #140b27;
@@ -240,6 +294,15 @@ body.theme-high-contrast {
   --yellow: #ffff00;
   --yellow-bg: rgba(255, 255, 0, 0.2);
   --purple: #ffffff;
+
+  --diff-addition-bg: rgba(0, 255, 0, 0.15);
+  --diff-deletion-bg: rgba(255, 0, 0, 0.15);
+  --diff-addition-bg-stage: rgba(0, 255, 0, 0.08);
+  --diff-deletion-bg-stage: rgba(255, 0, 0, 0.08);
+  --diff-addition-code: #00ff00;
+  --diff-deletion-code: #ff0000;
+  --diff-addition-num: #00ff00;
+  --diff-deletion-num: #ff0000;
 
   --commit-btn: #000000;
   --commit-btn-hover: #111111;
@@ -363,12 +426,10 @@ body.os-linux ::-webkit-scrollbar-thumb:hover {
 
 html {
   height: 100%;
-  overflow: hidden;
 }
 
 body {
   height: 100%;
-  overflow: hidden;
   background: var(--bg-0);
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -376,89 +437,142 @@ body {
   line-height: 1.5;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* needed to prevent body scroll */
 }
 
 #app {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow: visible; /* allow picker dropdowns to escape topbar */
+  min-height: 0;
 }
 
 /* ========================================
-   TOP BAR
+   TOP BAR — 3-zone layout
    ======================================== */
 
 .topbar {
-  height: var(--topbar-h);
+  height: 52px;
   background: var(--bg-1);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 10px;
   flex-shrink: 0;
   user-select: none;
-  gap: 4px;
-  overflow: hidden;
   min-width: 0;
+  position: relative;
+  z-index: 100;
+  overflow: visible; /* allow picker dropdowns to extend below */
 }
 
+/* Left zone: pickers — flex:1 but capped so center tabs always show */
 .topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  /* NO overflow:hidden — would clip the absolute-positioned picker dropdowns */
+  max-width: 480px;
+}
+
+/* Center zone: tabs — never shrinks, always visible */
+.topbar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 8px;
+}
+
+/* Right zone: fetch + utilities — flex:1 so it mirrors left, push content right */
+.topbar-right {
   display: flex;
   align-items: center;
   gap: 4px;
   flex: 1;
+  justify-content: flex-end;
   min-width: 0;
-  overflow: hidden;
 }
 
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 2px;
+/* Visual divider */
+.tb-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--border);
+  margin: 0 6px;
   flex-shrink: 0;
+  opacity: 0.6;
 }
 
+/* Keep old topbar-sep for any remaining uses */
 .topbar-sep {
   width: 1px;
   height: 20px;
   background: var(--border);
-  margin: 0 6px;
+  margin: 0 4px;
   flex-shrink: 0;
 }
+
+/* Icon-only buttons in topbar (Doctor, Sync, Settings) */
+.tb-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  flex-shrink: 0;
+}
+.tb-icon-btn svg { width: 16px; height: 16px; }
+.tb-icon-btn:hover {
+  background: var(--bg-3);
+  color: var(--text-primary);
+}
+
+
 
 /* Logo */
 .logo {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: var(--radius);
-  cursor: pointer;
-  transition: background var(--transition);
+  cursor: default;
+  margin-right: 4px;
 }
-.logo:hover { background: var(--bg-3); }
 .logo-icon {
   width: 18px;
   height: 18px;
   color: var(--accent);
+  flex-shrink: 0;
 }
 .logo-text {
   font-weight: 700;
   font-size: 14px;
   letter-spacing: -0.3px;
-  background: linear-gradient(135deg, #e6edf3 40%, #58a6ff);
+  background: linear-gradient(135deg, var(--text-primary) 40%, var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  white-space: nowrap;
 }
 
-/* Pickers (Repo / Profile) */
+
+/* Pickers (Repo / Profile / Branch) */
 .topbar-picker {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
+  gap: 7px;
+  padding: 5px 10px;
   border-radius: var(--radius);
   border: 1px solid transparent;
   cursor: pointer;
@@ -466,18 +580,64 @@ body {
   max-width: 200px;
   min-width: 0;
   flex-shrink: 1;
-  overflow: hidden;
+  /* NO overflow:hidden — would clip the picker-menu dropdown */
 }
 .topbar-picker:hover {
-  background: var(--bg-3);
+  background: var(--bg-2);
   border-color: var(--border);
 }
-.topbar-picker > svg:first-of-type {
-  width: 16px;
-  height: 16px;
+
+/* Modern circular user profile avatar button in the topbar-right */
+.profile-avatar-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  background: var(--bg-3) !important;
+  border: 1px solid var(--border) !important;
+}
+.profile-avatar-picker:hover {
+  border-color: var(--text-muted) !important;
+}
+.profile-avatar-picker.open,
+.profile-avatar-picker[aria-expanded="true"] {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 2px rgba(56, 139, 253, 0.3);
+}
+.profile-avatar-picker .avatar-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent);
+  background: var(--accent-muted);
+  user-select: none;
+}
+.profile-avatar-picker .chevron {
+  display: none !important;
+}
+.topbar-picker.active,
+.topbar-picker[aria-expanded="true"] {
+  background: var(--bg-2);
+  border-color: var(--border-focus);
+}
+.topbar-picker > svg:first-of-type,
+.topbar-picker .picker-icon {
+  width: 15px;
+  height: 15px;
   color: var(--text-secondary);
   flex-shrink: 0;
 }
+
 .picker-meta {
   display: flex;
   flex-direction: column;
@@ -524,6 +684,10 @@ body {
   animation: menuIn 0.12s ease-out;
 }
 .picker-menu.open { display: flex; }
+.picker-menu.right-aligned {
+  left: auto;
+  right: 0;
+}
 
 @keyframes menuIn {
   from { opacity: 0; transform: translateY(-4px) scale(0.98); }
@@ -673,17 +837,21 @@ body {
   flex-shrink: 0;
 }
 
-/* Tab switcher */
+/* Tab switcher — pill / segmented control */
 .topbar-tabs {
   display: flex;
   align-items: center;
   gap: 2px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 3px;
 }
 .topbar-tab {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 10px;
+  padding: 5px 14px;
   border-radius: var(--radius);
   border: none;
   background: none;
@@ -692,34 +860,31 @@ body {
   font-weight: 500;
   font-family: var(--font-sans);
   cursor: pointer;
-  transition: background var(--transition), color var(--transition);
+  transition: background var(--transition), color var(--transition), box-shadow var(--transition);
   position: relative;
   flex-shrink: 0;
   white-space: nowrap;
 }
 .topbar-tab svg { width: 14px; height: 14px; }
-.topbar-tab:hover { background: var(--bg-3); color: var(--text-primary); }
-.topbar-tab.active {
-  background: var(--bg-3);
+.topbar-tab:hover {
   color: var(--text-primary);
+  background: var(--bg-3);
 }
-.topbar-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 8px;
-  right: 8px;
-  height: 2px;
-  background: var(--accent);
-  border-radius: 99px;
+.topbar-tab.active {
+  background: var(--bg-0);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
+/* No underline pseudo-element needed with pill style */
+.topbar-tab.active::after { display: none; }
+
 .tab-badge {
   min-width: 16px;
   height: 16px;
   padding: 0 4px;
   border-radius: 99px;
-  background: var(--yellow);
-  color: #000;
+  background: var(--accent);
+  color: #fff;
   font-size: 10px;
   font-weight: 700;
   display: inline-flex;
@@ -727,6 +892,7 @@ body {
   justify-content: center;
   line-height: 1;
 }
+
 
 /* Topbar action buttons */
 .topbar-action-btn {
@@ -1355,8 +1521,8 @@ body.sidebar-collapsed .history-files-sidebar {
   min-height: 20px;
 }
 .diff-line:hover { background: rgba(255,255,255,0.02); }
-.diff-line.addition { background: rgba(63,185,80,0.08); }
-.diff-line.deletion  { background: rgba(248,81,73,0.08); }
+.diff-line.addition { background: var(--diff-addition-bg); }
+.diff-line.deletion  { background: var(--diff-deletion-bg); }
 .diff-line.info      { background: rgba(56,139,253,0.06); }
 
 .diff-line-stage-container {
@@ -1412,10 +1578,10 @@ body.sidebar-collapsed .history-files-sidebar {
   border-color: var(--text-secondary);
 }
 .diff-line.addition .diff-line-stage-container {
-  background: rgba(63, 185, 80, 0.04);
+  background: var(--diff-addition-bg-stage);
 }
 .diff-line.deletion .diff-line-stage-container {
-  background: rgba(248, 81, 73, 0.04);
+  background: var(--diff-deletion-bg-stage);
 }
 
 
@@ -1433,8 +1599,8 @@ body.sidebar-collapsed .history-files-sidebar {
   border-right: 1px solid var(--border);
   line-height: 20px;
 }
-.diff-line.addition .diff-line-num { color: rgba(63,185,80,0.6); }
-.diff-line.deletion  .diff-line-num { color: rgba(248,81,73,0.5); }
+.diff-line.addition .diff-line-num { color: var(--diff-addition-num); }
+.diff-line.deletion  .diff-line-num { color: var(--diff-deletion-num); }
 
 .diff-line-marker {
   width: 18px;
@@ -1456,8 +1622,8 @@ body.sidebar-collapsed .history-files-sidebar {
   flex: 1;
   tab-size: 2;
 }
-.diff-line.addition .diff-line-code { color: #aff5b4; }
-.diff-line.deletion  .diff-line-code { color: #ffdcd7; }
+.diff-line.addition .diff-line-code { color: var(--diff-addition-code); }
+.diff-line.deletion  .diff-line-code { color: var(--diff-deletion-code); }
 .diff-line.info      .diff-line-code { color: var(--text-link); font-style: italic; }
 
 /* Profile Inspector content */
@@ -2101,104 +2267,46 @@ body.sidebar-collapsed .history-files-sidebar {
    RESPONSIVE LAYOUT
    ======================================== */
 
-/* ---- Topbar: make it scrollable and prevent overflow ---- */
-.topbar {
-  overflow: hidden;
+/* ---- Medium screens: shrink pickers ---- */
+@media (max-width: 1200px) {
+  .topbar-left { max-width: 460px; }
+  .topbar-picker { max-width: 180px; }
+  .picker-label { display: none; }
+  .picker-value { font-size: 11px; }
 }
 
-.topbar-left {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
+/* ---- Small-medium: hide picker text, shrink remote btn ---- */
+@media (max-width: 960px) {
+  .topbar-left { max-width: 360px; }
+  .topbar-picker { max-width: 140px; }
+  .picker-meta { display: flex; }
+  .topbar-tab span { display: none; }
+  .topbar-tab { padding: 5px 8px; }
+  .remote-action-text { display: none; }
+  .remote-action-meta { display: none; }
+  .remote-action-btn { padding: 5px 8px; }
+  .tb-divider { margin: 0 4px; }
 }
 
-.topbar-right {
-  flex-shrink: 0;
-}
-
-/* ---- Medium screens: hide picker labels, shrink pickers ---- */
-@media (max-width: 1100px) {
-  .topbar-picker {
-    max-width: 140px;
-  }
-  .picker-label {
-    display: none;
-  }
-  .picker-value {
-    font-size: 11px;
-  }
-}
-
-/* ---- Small-medium screens: hide tab text, shrink more ---- */
-@media (max-width: 920px) {
-  .topbar-picker {
-    max-width: 100px;
-    padding: 4px 6px;
-    gap: 4px;
-  }
-  .picker-meta {
-    display: none;
-  }
-  .topbar-tab span {
-    display: none;
-  }
-  .topbar-tab {
-    padding: 5px 8px;
-  }
-  .topbar-action-btn span {
-    display: none;
-  }
-  .topbar-action-btn {
-    padding: 5px 8px;
-    gap: 0;
-    border: none;
-    background: none;
-  }
-  .topbar-action-btn:hover {
-    background: var(--bg-3);
-  }
-  .topbar-sep {
-    margin: 0 2px;
-  }
-  .remote-action-btn {
-    padding: 5px 8px;
-  }
-  .remote-action-meta {
-    display: none;
-  }
-}
-
-/* ---- Small screens: collapse sidebar automatically via body class ---- */
+/* ---- Small: hide logo text and limit further ---- */
 @media (max-width: 768px) {
-  .topbar {
-    padding: 0 6px;
-    gap: 4px;
-  }
-  .logo-text {
-    display: none;
-  }
-  .topbar-sep:not(:first-of-type) {
-    display: none;
-  }
-  .topbar-tabs {
-    gap: 0;
-  }
-  .remote-action-text {
-    display: none;
-  }
+  .topbar { padding: 0 6px; }
+  .topbar-left { max-width: 240px; }
+  .topbar-picker { max-width: 40px; padding: 5px 6px; gap: 0; }
+  .picker-meta { display: none; }
+  .chevron { display: none; }
+  .logo-text { display: none; }
+  .logo { padding: 5px 6px; margin-right: 0; }
 }
 
-/* ---- Extra small: hide branch picker text ---- */
-@media (max-width: 600px) {
-  #branch-picker-btn .picker-meta,
-  #profile-picker-btn .picker-meta {
-    display: none;
-  }
-  .topbar-picker {
-    max-width: 36px;
-    padding: 4px 6px;
-  }
+/* ---- Extra small: icon-only pickers ---- */
+@media (max-width: 560px) {
+  .topbar-left { max-width: 100px; }
+  .topbar-center { padding: 0 4px; }
+  .topbar-tab { padding: 5px 6px; }
 }
+
+
 
 /* ---- Sidebar collapse animation ---- */
 .changes-sidebar,

@@ -51,6 +51,7 @@ const els = {
   profileMenu:       $('profile-menu'),
   currentRepoName:   $('current-repo-name'),
   currentProfileName:$('current-profile-name'),
+  topbarProfileAvatar:$('topbar-profile-avatar'),
 
   // Tab buttons
   tabChanges:        $('tab-changes'),
@@ -177,6 +178,7 @@ const els = {
   undoBanner:               $('undo-banner'),
   undoCommitBtn:            $('undo-commit-btn'),
   stashBanner:              $('stash-banner'),
+  stashViewBtn:             $('stash-view-btn'),
   stashRestoreBtn:          $('stash-restore-btn'),
   stashDiscardBtn:          $('stash-discard-btn'),
 
@@ -410,9 +412,10 @@ async function fetchBranchName(repoPath) {
   }
 }
 
-async function fetchRemoteStatus(repoPath) {
+async function fetchRemoteStatus(repoPath, skipFetch = false) {
   try {
-    const res = await fetch(`${API_BASE}/git/remote-status?path=${encodeURIComponent(repoPath)}`);
+    const url = `${API_BASE}/git/remote-status?path=${encodeURIComponent(repoPath)}${skipFetch ? '&skipFetch=true' : ''}`;
+    const res = await fetch(url);
     if (!res.ok) return { ahead: 0, behind: 0, hasRemote: false };
     return await res.json();
   } catch (e) {
@@ -468,9 +471,22 @@ async function handleRemoteAction() {
   if (mode === 'none') return;
 
   const btn = els.remoteActionBtn;
+  const icon = els.remoteActionIcon;
+  const text = els.remoteActionText;
+  const meta = els.remoteActionMeta;
+
+  if (!btn || !icon || !text || !meta) return;
+
   btn.disabled = true;
-  const origHtml = btn.innerHTML;
-  btn.innerHTML = `<svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> ${mode === 'pull' ? 'Bajando...' : mode === 'push' ? 'Subiendo...' : 'Actualizando...'}`;
+
+  // Guardamos el estado original para restaurar en caso de error
+  const origIconHtml = icon.innerHTML;
+  const origTextContent = text.textContent;
+  const origMetaContent = meta.textContent;
+
+  icon.innerHTML = `<svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
+  text.textContent = mode === 'pull' ? 'Bajando...' : mode === 'push' ? 'Subiendo...' : 'Actualizando...';
+  meta.textContent = '';
 
   const endpoint = mode === 'pull' ? 'pull' : mode === 'push' ? 'push' : 'fetch';
 
@@ -498,7 +514,9 @@ async function handleRemoteAction() {
     updateRemoteButton(newStatus);
   } catch (e) {
     showToast('error', 'Error en operación remota', e.message);
-    btn.innerHTML = origHtml;
+    icon.innerHTML = origIconHtml;
+    text.textContent = origTextContent;
+    meta.textContent = origMetaContent;
     btn.disabled = false;
   }
 }
@@ -581,6 +599,9 @@ async function selectRepository(repoPath) {
   state.activeProfile = resolvedProfile;
   state.selectedProfileId = resolvedProfile;
   els.currentProfileName.textContent = resolvedProfile || '—';
+  if (els.topbarProfileAvatar) {
+    els.topbarProfileAvatar.textContent = resolvedProfile ? resolvedProfile.charAt(0).toUpperCase() : '—';
+  }
 
   // Update active items in menus
   els.repoList.querySelectorAll('.picker-item').forEach(el => {
@@ -635,6 +656,9 @@ async function selectActiveProfile(profileKey) {
   state.activeProfile = profileKey;
   state.selectedProfileId = profileKey;
   els.currentProfileName.textContent = profileKey;
+  if (els.topbarProfileAvatar) {
+    els.topbarProfileAvatar.textContent = profileKey ? profileKey.charAt(0).toUpperCase() : '—';
+  }
 
   // Update profile menu
   els.profileMenu.querySelectorAll('.picker-item').forEach(el => {
@@ -669,7 +693,25 @@ async function selectActiveProfile(profileKey) {
 function renderChanges() {
   els.changesList.innerHTML = '';
 
-  if (state.repoData.changes.length === 0) {
+  // Handle Stash Banner
+  if (els.stashBanner) {
+    if (state.repoData && state.repoData.stashedChanges) {
+      const descEl = els.stashBanner.querySelector('.stash-banner-desc');
+      if (descEl) {
+        descEl.textContent = `Tienes cambios guardados en stash para la rama ${state.repoData.stashedChanges.branch}.`;
+      }
+      els.stashBanner.style.display = 'block';
+    } else {
+      els.stashBanner.style.display = 'none';
+    }
+  }
+
+  // Update main workspace placeholder if no local changes
+  if (state.repoData && state.repoData.changes.length === 0) {
+    showDiffPlaceholder();
+  }
+
+  if (!state.repoData || state.repoData.changes.length === 0) {
     els.changesList.appendChild(createEmptyState(
       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>`,
       'Sin cambios locales',
@@ -706,22 +748,28 @@ function renderChanges() {
       const targetChecked = e.target.checked;
       checkbox.disabled = true;
       try {
-        const endpoint = targetChecked ? 'stage-file' : 'unstage-file';
-        const res = await fetch(`${API_BASE}/git/${endpoint}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            repoPath: state.activeRepoPath,
-            filePath: file.path
-          })
-        });
-        
-        if (!res.ok) throw new Error(await res.text());
-        
-        await selectRepository(state.activeRepoPath);
+        if (targetChecked) {
+          await fetch(`${API_BASE}/git/stage-file`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ repoPath: state.activeRepoPath, filePath: file.path })
+          });
+          state.stagedFiles.add(file.id);
+        } else {
+          await fetch(`${API_BASE}/git/unstage-file`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ repoPath: state.activeRepoPath, filePath: file.path })
+          });
+          state.stagedFiles.delete(file.id);
+        }
+        await fetchRepoData(state.activeRepoPath);
+        renderChanges();
+        updateChangesBadge();
       } catch (err) {
         showToast('error', 'Error de Staging', err.message);
-        e.target.checked = !targetChecked;
+        checkbox.checked = !targetChecked;
+      } finally {
         checkbox.disabled = false;
       }
     });
@@ -734,19 +782,6 @@ function renderChanges() {
 
     els.changesList.appendChild(item);
   });
-
-  // Handle Stash Banner
-  if (els.stashBanner) {
-    if (state.repoData.stashedChanges) {
-      const descEl = els.stashBanner.querySelector('.stash-banner-desc');
-      if (descEl) {
-        descEl.textContent = `Tienes cambios guardados en stash para la rama ${state.repoData.stashedChanges.branch}.`;
-      }
-      els.stashBanner.style.display = 'block';
-    } else {
-      els.stashBanner.style.display = 'none';
-    }
-  }
 }
 
 function selectChangeFile(file) {
@@ -777,6 +812,7 @@ async function loadFileDiff(file) {
     </div>`;
 
   const diffData = await fetchFileDiff(file.path, file.status);
+  state.currentDiffText = diffData.diff;
   renderDiffViewer(diffData, els.diffContent, true, file.path);
 }
 
@@ -784,6 +820,40 @@ function showDiffPlaceholder() {
   els.diffFilename.textContent = 'Selecciona un archivo';
   els.diffFilepath.textContent = '';
   els.diffStats.innerHTML = '';
+
+  if (state.repoData && state.repoData.stashedChanges && (!state.repoData.changes || state.repoData.changes.length === 0)) {
+    els.diffFilename.textContent = 'Cambios en Stash';
+    els.diffContent.innerHTML = `
+      <div class="diff-placeholder" style="padding: 40px; text-align: center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="color:var(--accent); width:56px; height:56px; margin-bottom:16px; opacity:0.8;">
+          <polyline points="21 8 21 21 3 21 3 8"></polyline>
+          <rect x="1" y="3" width="22" height="5"></rect>
+          <line x1="10" y1="12" x2="14" y2="12"></line>
+        </svg>
+        <h3 style="font-size: 16px; font-weight: 600; color: var(--text-primary); margin: 0 0 8px 0;">Tienes cambios en stash</h3>
+        <p style="max-width: 440px; text-align: center; color: var(--text-muted); margin: 0 auto 24px auto; font-size: 13px; line-height: 1.6;">
+          Tienes cambios temporales guardados en stash para la rama activa <strong>${escapeHTML(state.repoData.stashedChanges.branch)}</strong>. Puedes ver qué archivos cambiaron, restaurarlos para continuar trabajando en ellos o eliminarlos permanentemente.
+        </p>
+        <div style="display:flex; justify-content:center; gap:12px;">
+          <button class="gx-btn secondary" id="stash-main-view-btn" style="padding: 7px 16px; font-size:12px;">Ver archivos</button>
+          <button class="gx-btn primary" id="stash-main-restore-btn" style="padding: 7px 16px; font-size:12px;">Restaurar cambios</button>
+          <button class="gx-btn secondary" id="stash-main-discard-btn" style="padding: 7px 16px; font-size:12px;">Descartar stash</button>
+        </div>
+      </div>`;
+
+    // Redirigir clics a los botones del sidebar correspondientes
+    document.getElementById('stash-main-view-btn')?.addEventListener('click', () => {
+      inspectStash(state.repoData.stashedChanges.id);
+    });
+    document.getElementById('stash-main-restore-btn')?.addEventListener('click', () => {
+      els.stashRestoreBtn?.click();
+    });
+    document.getElementById('stash-main-discard-btn')?.addEventListener('click', () => {
+      els.stashDiscardBtn?.click();
+    });
+    return;
+  }
+
   els.diffContent.innerHTML = `
     <div class="diff-placeholder">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
@@ -792,6 +862,132 @@ function showDiffPlaceholder() {
       </svg>
       <p>Selecciona un archivo de la lista de cambios para ver sus diferencias</p>
     </div>`;
+}
+
+async function inspectStash(stashId) {
+  if (!state.activeRepoPath) return;
+
+  els.diffFilename.textContent = 'Inspeccionando Stash';
+  els.diffFilepath.textContent = '';
+  els.diffStats.innerHTML = '';
+  
+  // Mostrar loading
+  els.diffContent.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--text-muted);font-size:12px;">
+      <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      Cargando archivos del stash...
+    </div>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/git/commit-files?path=${encodeURIComponent(state.activeRepoPath)}&commit=${encodeURIComponent(stashId)}`);
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    const files = data.files || [];
+
+    if (files.length === 0) {
+      els.diffContent.innerHTML = `<div class="empty-state"><p>El stash está vacío</p></div>`;
+      return;
+    }
+
+    // Renderizar layout de visualizador de stash de 2 columnas
+    els.diffContent.innerHTML = `
+      <div class="stash-inspector-container" style="display:flex; flex-direction:column; height:100%; width:100%;">
+        <div class="stash-inspector-topbar" style="display:flex; justify-content:space-between; align-items:center; padding: 10px 16px; border-bottom:1px solid var(--border); background:var(--bg-1); flex-shrink:0;">
+          <div>
+            <h3 style="margin:0; font-size:13px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px; color:var(--accent);"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect></svg>
+              Archivos guardados en Stash
+            </h3>
+            <span style="font-size:11px; color:var(--text-muted);">Stash activo en la rama <strong>${escapeHTML(state.repoData.stashedChanges.branch)}</strong></span>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="gx-btn secondary sm" id="stash-inspect-discard-btn">Descartar</button>
+            <button class="gx-btn primary sm" id="stash-inspect-restore-btn">Restaurar cambios</button>
+          </div>
+        </div>
+        <div class="stash-inspector-body" style="display:flex; flex:1; min-height:0;">
+          <div class="stash-inspector-sidebar" style="width: 240px; border-right: 1px solid var(--border); background: var(--bg-1); display: flex; flex-direction: column; flex-shrink: 0; overflow-y:auto; padding: 6px 0;">
+            <div class="stash-inspect-files-list"></div>
+          </div>
+          <div class="stash-inspector-diff" id="stash-inspect-diff-container" style="flex: 1; min-width: 0; background: var(--bg-0); overflow: auto;">
+            <div class="diff-placeholder" style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:12px;">
+              Selecciona un archivo para ver sus diferencias
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    // Redirigir clics
+    document.getElementById('stash-inspect-restore-btn')?.addEventListener('click', () => {
+      els.stashRestoreBtn?.click();
+    });
+    document.getElementById('stash-inspect-discard-btn')?.addEventListener('click', () => {
+      els.stashDiscardBtn?.click();
+    });
+
+    const listContainer = els.diffContent.querySelector('.stash-inspect-files-list');
+    const diffContainer = document.getElementById('stash-inspect-diff-container');
+
+    // Dibujar elementos de lista
+    files.forEach((file, index) => {
+      const item = document.createElement('div');
+      item.className = 'picker-item';
+      item.style.padding = '8px 12px';
+      item.style.borderBottom = '1px solid var(--border-subtle)';
+      item.style.cursor = 'pointer';
+      item.style.display = 'flex';
+      item.style.alignItems = 'center';
+      item.style.justifyContent = 'space-between';
+      item.style.fontSize = '12px';
+
+      const statusLetter = getStatusLetter(file.status);
+
+      item.innerHTML = `
+        <div style="display:flex; flex-direction:column; min-width:0; flex:1; padding-right:8px;">
+          <span style="font-weight:600; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHTML(file.name)}">${escapeHTML(file.name)}</span>
+          <span style="font-size:10px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHTML(file.path)}">${escapeHTML(file.path)}</span>
+        </div>
+        <span class="change-status-badge ${statusLetter}" style="font-size: 9px; font-weight:700; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; border-radius:3px;">${statusLetter}</span>
+      `;
+
+      item.addEventListener('click', async () => {
+        // Estilo seleccionado
+        listContainer.querySelectorAll('.picker-item').forEach(el => {
+          el.style.background = '';
+        });
+        item.style.background = 'var(--bg-3)';
+
+        // Cargar diff
+        diffContainer.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--text-muted);font-size:12px;">
+            <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            Cargando diferencias de ${escapeHTML(file.name)}...
+          </div>`;
+
+        try {
+          const diffRes = await fetch(`${API_BASE}/commit-diff?path=${encodeURIComponent(state.activeRepoPath)}&commit=${encodeURIComponent(stashId)}&file=${encodeURIComponent(file.path)}`);
+          if (!diffRes.ok) throw new Error(await diffRes.text());
+          const diffData = await diffRes.json();
+
+          // Renderizar diff
+          const parsed = parseDiffLines(diffData.diff);
+          renderDiffViewer({ diff: diffData.diff, lines: parsed }, diffContainer, false, file.path);
+        } catch (e) {
+          diffContainer.innerHTML = `<div class="empty-state"><p style="color:var(--red);">Error al cargar diff: ${escapeHTML(e.message)}</p></div>`;
+        }
+      });
+
+      listContainer.appendChild(item);
+
+      // Clic automático al primer archivo para mostrar diff al instante
+      if (index === 0) {
+        item.click();
+      }
+    });
+
+  } catch (err) {
+    els.diffContent.innerHTML = `<div class="empty-state"><p style="color:var(--red);">Error al cargar stash: ${escapeHTML(err.message)}</p></div>`;
+  }
 }
 
 function updateChangesBadge() {
@@ -1873,11 +2069,70 @@ async function handleCommit() {
     showDiffPlaceholder();
     updateChangesBadge();
     updateCommitBtn();
+
+    // Also refresh remote status to show push/pull counts
+    fetchRemoteStatus(state.activeRepoPath, true).then(status => {
+      state.remoteStatus = status;
+      updateRemoteButton(status);
+    });
   } catch (err) {
     showToast('error', 'Error al hacer commit', err.message);
   } finally {
     els.commitBtn.innerHTML = origHtml;
     updateCommitBtn();
+  }
+}
+
+let isRefreshing = false;
+async function autoRefresh() {
+  if (isRefreshing || !state.activeRepoPath) return;
+
+  // Only refresh when window/tab is visible and active view is changes or history
+  if (document.visibilityState === 'hidden') return;
+  if (state.activeView !== 'changes' && state.activeView !== 'history') return;
+
+  isRefreshing = true;
+  try {
+    // 1. Fetch updated repository changes, commits, and stashedChanges
+    await fetchRepoData(state.activeRepoPath);
+
+    // 2. Render updates based on active view
+    if (state.activeView === 'changes') {
+      renderChanges();
+      updateChangesBadge();
+      updateCommitBtn();
+
+      // If a file was selected, check if it's still modified
+      if (state.selectedChangeFile) {
+        const stillModifiedFile = state.repoData?.changes?.find(c => c.id === state.selectedChangeFile.id);
+        if (stillModifiedFile) {
+          state.selectedChangeFile = stillModifiedFile;
+          
+          // Quietly update diff (fetch first, then render without a full layout spinner flash)
+          const diffData = await fetchFileDiff(stillModifiedFile.path, stillModifiedFile.status);
+          if (state.currentDiffText !== diffData.diff) {
+            state.currentDiffText = diffData.diff;
+            renderDiffViewer(diffData, els.diffContent, true, stillModifiedFile.path);
+          }
+        } else {
+          state.selectedChangeFile = null;
+          showDiffPlaceholder();
+        }
+      }
+    } else if (state.activeView === 'history') {
+      renderHistoryList();
+    }
+
+    // 3. Refresh remote status in background (only when changes view is active to update Pull/Push buttons)
+    if (state.activeView === 'changes') {
+      const status = await fetchRemoteStatus(state.activeRepoPath, true); // skipFetch = true to skip network
+      state.remoteStatus = status;
+      updateRemoteButton(status);
+    }
+  } catch (err) {
+    console.error('Auto-refresh error:', err);
+  } finally {
+    isRefreshing = false;
   }
 }
 
@@ -2203,6 +2458,12 @@ function initEvents() {
   });
 
   // --- Stash Banner Buttons ---
+  els.stashViewBtn?.addEventListener('click', () => {
+    if (state.repoData && state.repoData.stashedChanges) {
+      inspectStash(state.repoData.stashedChanges.id);
+    }
+  });
+
   els.stashRestoreBtn?.addEventListener('click', async () => {
     if (!state.activeRepoPath || !state.repoData.stashedChanges) return;
 
@@ -2317,6 +2578,21 @@ function initEvents() {
       wasCollapsedByResize = false; // User choice overrides resize behavior
     });
   }
+
+  // --- Auto-refresh listeners ---
+  window.addEventListener('focus', autoRefresh);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      autoRefresh();
+    }
+  });
+
+  // Periodic refresh when active and tab is visible (every 10 seconds)
+  setInterval(() => {
+    if (document.visibilityState === 'visible') {
+      autoRefresh();
+    }
+  }, 10000);
 }
 
 // ============================================================
@@ -2344,6 +2620,9 @@ async function init() {
   } else {
     els.currentRepoName.textContent = 'Sin repositorio';
     els.currentProfileName.textContent = 'Sin perfil';
+    if (els.topbarProfileAvatar) {
+      els.topbarProfileAvatar.textContent = '—';
+    }
   }
 
   switchView('changes');
