@@ -32,13 +32,22 @@ if (!fs.existsSync(binariesDir)) {
   fs.mkdirSync(binariesDir, { recursive: true });
 }
 
+const distServerDir = path.join(process.cwd(), 'dist-server');
+if (!fs.existsSync(distServerDir)) {
+  fs.mkdirSync(distServerDir, { recursive: true });
+}
+
 const ext = platform === 'win32' ? '.exe' : '';
 const tempOutput = path.join(binariesDir, `gitx-backend-temp${ext}`);
 const finalOutput = path.join(binariesDir, `gitx-backend-${triple}${ext}`);
+const bundledServer = path.join(distServerDir, 'server.cjs');
 
-console.log(`Compilando backend con pkg para target: ${pkgTarget}...`);
 try {
-  execSync(`npx pkg server.js --targets ${pkgTarget} --output "${tempOutput}"`, { stdio: 'inherit' });
+  console.log('Empaquetando dependencias con esbuild...');
+  execSync(`npx esbuild server.js --bundle --platform=node --format=cjs --outfile="${bundledServer}"`, { stdio: 'inherit' });
+
+  console.log(`Compilando backend con pkg para target: ${pkgTarget}...`);
+  execSync(`npx pkg "${bundledServer}" --targets ${pkgTarget} --output "${tempOutput}"`, { stdio: 'inherit' });
   
   if (fs.existsSync(tempOutput)) {
     if (fs.existsSync(finalOutput)) {
@@ -48,6 +57,14 @@ try {
     console.log(`¡Backend compilado con éxito como sidecar en: ${finalOutput}!`);
   } else {
     throw new Error('No se generó el archivo temporal de pkg.');
+  }
+
+  // Limpiar archivo temporal bundled
+  if (fs.existsSync(bundledServer)) {
+    fs.unlinkSync(bundledServer);
+  }
+  if (fs.existsSync(distServerDir)) {
+    fs.rmdirSync(distServerDir);
   }
 } catch (err) {
   console.error('Error al compilar el backend:', err);
