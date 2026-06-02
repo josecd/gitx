@@ -1,6 +1,6 @@
 import './style.css';
 
-const API_BASE = 'http://localhost:3001/api';
+let API_BASE = 'http://localhost:3001/api';
 
 // ============================================================
 // STATE
@@ -2602,6 +2602,17 @@ async function init() {
   initPreferences();
   initEvents();
   initDragAndDrop();
+
+  // Resolve dynamic backend port if running inside Tauri
+  if (window.__TAURI__) {
+    try {
+      const port = await window.__TAURI__.core.invoke('get_backend_port');
+      API_BASE = `http://localhost:${port}/api`;
+      console.log('Dynamic API_BASE resolved:', API_BASE);
+    } catch (err) {
+      console.error('Failed to get dynamic backend port from Tauri:', err);
+    }
+  }
 
   const config = await fetchConfig();
   if (!config) return;

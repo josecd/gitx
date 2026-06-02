@@ -13,7 +13,13 @@ import { SSHManager } from '../dist/ssh.js';
 
 const execAsync = promisify(exec);
 const app = express();
-const PORT = 3001;
+let PORT = 3001;
+const portArgIndex = process.argv.indexOf('--port');
+if (portArgIndex !== -1 && process.argv[portArgIndex + 1]) {
+  PORT = parseInt(process.argv[portArgIndex + 1], 10);
+} else if (process.env.PORT) {
+  PORT = parseInt(process.env.PORT, 10);
+}
 
 app.use(cors());
 app.use(express.json());
