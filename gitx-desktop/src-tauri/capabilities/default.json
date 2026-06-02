@@ -7,6 +7,15 @@
   ],
   "permissions": [
     "core:default",
-    "shell:allow-gitx-backend"
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "binaries/gitx-backend",
+          "sidecar": true,
+          "args": true
+        }
+      ]
+    }
   ]
 }

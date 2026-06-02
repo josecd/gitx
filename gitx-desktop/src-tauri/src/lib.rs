@@ -13,11 +13,11 @@ pub fn run() {
         )?;
       }
 
-      // Spawn the Express backend sidecar (gitx-backend)
+      // Spawn the Express backend sidecar (binaries/gitx-backend)
       #[cfg(not(mobile))]
       {
         let shell = app.shell();
-        match shell.sidecar("gitx-backend") {
+        match shell.sidecar("binaries/gitx-backend") {
           Ok(sidecar) => {
             match sidecar.spawn() {
               Ok(_) => println!("Successfully spawned backend sidecar"),
