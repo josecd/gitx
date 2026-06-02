@@ -11,7 +11,7 @@
       "identifier": "shell:allow-spawn",
       "allow": [
         {
-          "name": "binaries/gitx-backend",
+          "name": "gitx-backend",
           "sidecar": true,
           "args": true
         }

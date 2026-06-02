@@ -34,7 +34,7 @@ pub fn run() {
       #[cfg(not(mobile))]
       {
         let shell = app.shell();
-        match shell.sidecar("binaries/gitx-backend") {
+        match shell.sidecar("gitx-backend") {
           Ok(sidecar) => {
             // Pass the port to the sidecar
             let sidecar_with_args = sidecar.args(["--port", &port.to_string()]);

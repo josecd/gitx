@@ -27,7 +27,7 @@ if (platform === 'darwin') {
   process.exit(1);
 }
 
-const binariesDir = path.join(process.cwd(), 'src-tauri', 'binaries');
+const binariesDir = path.join(process.cwd(), 'src-tauri');
 if (!fs.existsSync(binariesDir)) {
   fs.mkdirSync(binariesDir, { recursive: true });
 }

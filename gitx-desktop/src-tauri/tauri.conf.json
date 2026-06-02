@@ -28,7 +28,7 @@
     "active": true,
     "targets": "all",
     "externalBin": [
-      "binaries/gitx-backend"
+      "gitx-backend"
     ],
     "icon": [
       "icons/32x32.png",
