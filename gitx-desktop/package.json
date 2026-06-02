@@ -10,9 +10,11 @@
     "preview": "vite preview",
     "tauri:build-sidecar": "node scripts/build-sidecar.js",
     "tauri:dev": "npm run tauri:build-sidecar && npx tauri dev",
-    "tauri:build": "npm run tauri:build-sidecar && npx tauri build"
+    "tauri:build": "npm run tauri:build-sidecar && npx tauri build",
+    "tauri": "tauri"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.11.2",
     "concurrently": "^10.0.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
